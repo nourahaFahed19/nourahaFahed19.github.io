@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norah Jewelry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF8F4;
+    --warm-white: #F5F0E8;
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #A07830;
+    --charcoal: #2A2520;
+    --stone: #7A7068;
+    --blush: #EFE0D0;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(250,248,244,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem; font-weight: 300; letter-spacing: 0.12em;
+    color: var(--charcoal); text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; font-size: 0.78rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--stone); font-weight: 400;
+    position: relative; padding-bottom: 3px;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 1px; background: var(--gold);
+    transition: width 0.35s ease;
+  }
+  .nav-links a:hover { color: var(--charcoal); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ── HERO ── */
+  .hero {
+    height: 100vh; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 75% 50%, rgba(201,168,76,0.1) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 80% at 15% 80%, rgba(239,224,208,0.6) 0%, transparent 60%),
+      var(--cream);
+  }
+
+  /* Decorative rings in hero */
+  .hero-decor {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .ring-decor {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .ring-decor:nth-child(1) { width: 600px; height: 600px; top: -150px; right: -100px; }
+  .ring-decor:nth-child(2) { width: 400px; height: 400px; top: -80px; right: 50px; border-color: rgba(201,168,76,0.12); }
+  .ring-decor:nth-child(3) { width: 200px; height: 200px; bottom: 10%; left: 8%; border-color: rgba(201,168,76,0.18); }
+  .ring-decor:nth-child(4) { width: 80px; height: 80px; bottom: 25%; left: 15%; border-color: rgba(201,168,76,0.3); }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    text-align: center; max-width: 720px; padding: 0 2rem;
+    animation: fadeUp 1.1s ease both;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.5rem; font-weight: 400;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.2rem, 7vw, 6rem);
+    font-weight: 300; line-height: 1.08;
+    color: var(--charcoal); margin-bottom: 1.6rem;
+  }
+  .hero-title em { font-style: italic; color: var(--gold-dark); }
+
+  .hero-subtitle {
+    font-size: 0.9rem; letter-spacing: 0.06em; color: var(--stone);
+    line-height: 1.9; max-width: 480px; margin: 0 auto 2.8rem;
+  }
+
+  .btn-primary {
+    display: inline-block; padding: 14px 44px;
+    background: var(--charcoal); color: var(--cream);
+    text-decoration: none; font-size: 0.75rem; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 400;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+  .btn-outline {
+    display: inline-block; padding: 13px 36px;
+    border: 1px solid var(--gold); color: var(--gold-dark);
+    text-decoration: none; font-size: 0.75rem; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 400; margin-left: 1rem;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { background: var(--gold); color: var(--cream); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--stone); animation: fadeUp 1.5s 0.5s ease both;
+  }
+  .scroll-line {
+    width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* ── SECTION SHELL ── */
+  section { padding: 110px 5%; }
+
+  .section-header {
+    text-align: center; margin-bottom: 70px;
+  }
+  .section-tag {
+    font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); display: block; margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 300;
+    color: var(--charcoal); line-height: 1.15;
+  }
+  .section-divider {
+    width: 50px; height: 1px; background: var(--gold);
+    margin: 1.4rem auto 1.4rem; display: block;
+  }
+  .section-desc {
+    max-width: 480px; margin: 0 auto;
+    font-size: 0.88rem; color: var(--stone); line-height: 1.9; letter-spacing: 0.03em;
+  }
+
+  /* ── PRODUCT GRID ── */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2px;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .product-card {
+    position: relative; overflow: hidden; cursor: pointer;
+    background: var(--warm-white);
+  }
+
+  .product-img {
+    width: 100%; aspect-ratio: 3/4; overflow: hidden;
+    position: relative;
+  }
+
+  .product-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    transition: transform 0.6s ease;
+  }
+
+  .product-card:hover .product-placeholder { transform: scale(1.04); }
+
+  .product-icon {
+    font-size: 3.5rem; opacity: 0.55;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .product-card:hover .product-icon { opacity: 0.85; transform: scale(1.1) rotate(-5deg); }
+
+  .product-info {
+    padding: 22px 24px 26px;
+    border-top: 1px solid var(--border);
+  }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-weight: 400; color: var(--charcoal);
+    margin-bottom: 5px; letter-spacing: 0.02em;
+  }
+  .product-material {
+    font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--stone); margin-bottom: 12px;
+  }
+  .product-price {
+    font-size: 0.9rem; color: var(--gold-dark); letter-spacing: 0.05em;
+  }
+
+  .product-tag {
+    position: absolute; top: 16px; left: 16px;
+    background: var(--charcoal); color: var(--cream);
+    font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 4px 10px;
+  }
+
+  /* Palette variants per section */
+  .rings-section { background: var(--cream); }
+  .necklaces-section { background: var(--warm-white); }
+  .bracelets-section { background: var(--cream); }
+
+  /* Necklaces: different layout */
+  .necklaces-section .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .necklaces-section .product-img { aspect-ratio: 1/1; }
+
+  /* ── FEATURE BANNER ── */
+  .feature-banner {
+    background: var(--charcoal);
+    padding: 90px 5%; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .feature-banner::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 120% at 50% 50%, rgba(201,168,76,0.12) 0%, transparent 70%);
+  }
+  .feature-banner-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300;
+    color: var(--cream); line-height: 1.25;
+    position: relative; margin-bottom: 1.8rem;
+  }
+  .feature-banner-title em { color: var(--gold); font-style: italic; }
+  .feature-banner p {
+    color: rgba(250,248,244,0.55); max-width: 480px; margin: 0 auto 2.5rem;
+    font-size: 0.88rem; line-height: 1.9; position: relative;
+  }
+  .btn-gold {
+    display: inline-block; padding: 14px 44px;
+    background: var(--gold); color: var(--charcoal);
+    text-decoration: none; font-size: 0.75rem; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 500; position: relative;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* ── ABOUT ── */
+  .about-section {
+    background: var(--blush);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; padding: 0; align-items: stretch;
+  }
+
+  .about-visual {
+    background: var(--warm-white);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 560px; position: relative; overflow: hidden;
+  }
+
+  .about-visual-inner {
+    position: relative; width: 280px; height: 280px;
+  }
+  .about-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.4);
+  }
+  .about-ring:nth-child(1) { inset: 0; border-width: 2px; border-color: var(--gold-light); }
+  .about-ring:nth-child(2) { inset: 30px; border-color: rgba(201,168,76,0.3); }
+  .about-ring:nth-child(3) { inset: 70px; border-color: rgba(201,168,76,0.5); border-width: 2px; }
+  .about-monogram {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem; font-weight: 300; color: var(--gold);
+    letter-spacing: -0.02em; font-style: italic;
+  }
+
+  .about-content {
+    padding: 80px 8%;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+
+  .about-content .section-tag { text-align: left; }
+  .about-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 300;
+    color: var(--charcoal); line-height: 1.2; margin-bottom: 1.8rem;
+  }
+  .about-title em { color: var(--gold-dark); font-style: italic; }
+  .about-body {
+    font-size: 0.88rem; color: var(--stone); line-height: 2;
+    margin-bottom: 1.4rem; letter-spacing: 0.02em;
+  }
+
+  .about-stats {
+    display: flex; gap: 2.5rem; margin-top: 2.5rem;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 300; color: var(--gold-dark);
+    display: block; line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--stone); display: block; margin-top: 5px;
+  }
+
+  /* ── VALUES ── */
+  .values-strip {
+    background: var(--charcoal); padding: 60px 5%;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+  }
+  .value-item {
+    padding: 40px 5%; text-align: center;
+    border-right: 1px solid rgba(201,168,76,0.15);
+  }
+  .value-item:last-child { border-right: none; }
+  .value-icon { font-size: 1.6rem; margin-bottom: 14px; }
+  .value-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; color: var(--cream); font-weight: 300;
+    margin-bottom: 8px; letter-spacing: 0.04em;
+  }
+  .value-desc { font-size: 0.78rem; color: rgba(250,248,244,0.45); line-height: 1.8; letter-spacing: 0.03em; }
+
+  /* ── CONTACT ── */
+  .contact-section { background: var(--cream); }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; max-width: 1000px; margin: 0 auto;
+  }
+
+  .contact-info h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 300; color: var(--charcoal);
+    margin-bottom: 1.2rem; letter-spacing: 0.04em;
+  }
+  .contact-info p {
+    font-size: 0.86rem; color: var(--stone); line-height: 2; margin-bottom: 2rem;
+  }
+  .contact-detail {
+    display: flex; align-items: flex-start; gap: 14px; margin-bottom: 1.4rem;
+  }
+  .contact-detail-icon { font-size: 1rem; margin-top: 2px; }
+  .contact-detail-text {
+    font-size: 0.82rem; color: var(--charcoal); line-height: 1.7;
+  }
+  .contact-detail-label {
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); display: block; margin-bottom: 3px;
+  }
+
+  .contact-form { display: flex; flex-direction: column; gap: 18px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--stone);
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: transparent;
+    border: none; border-bottom: 1px solid rgba(42,37,32,0.2);
+    padding: 10px 0; font-family: 'Jost', sans-serif;
+    font-size: 0.88rem; color: var(--charcoal);
+    outline: none; transition: border-color 0.3s;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--gold); }
+  .form-group textarea { resize: none; height: 100px; }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: rgba(122,112,104,0.5); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  .btn-submit {
+    padding: 14px 40px; background: var(--charcoal); color: var(--cream);
+    border: none; cursor: pointer; font-family: 'Jost', sans-serif;
+    font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase;
+    margin-top: 8px; align-self: flex-start;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .btn-submit:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--charcoal); padding: 70px 5% 30px;
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 50px; padding-bottom: 50px;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    margin-bottom: 30px;
+  }
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 300; color: var(--cream);
+    letter-spacing: 0.1em; margin-bottom: 1rem;
+  }
+  .footer-brand span { color: var(--gold); }
+  .footer-tagline {
+    font-size: 0.8rem; color: rgba(250,248,244,0.4); line-height: 1.8;
+    max-width: 220px;
+  }
+
+  .footer-col h4 {
+    font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.4rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+  .footer-col ul li a {
+    font-size: 0.8rem; color: rgba(250,248,244,0.45); text-decoration: none;
+    letter-spacing: 0.05em; transition: color 0.3s;
+  }
+  .footer-col ul li a:hover { color: var(--cream); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy {
+    font-size: 0.72rem; color: rgba(250,248,244,0.3); letter-spacing: 0.08em;
+  }
+  .social-links { display: flex; gap: 18px; }
+  .social-links a {
+    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(250,248,244,0.35); text-decoration: none; transition: color 0.3s;
+  }
+  .social-links a:hover { color: var(--gold); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .about-section { grid-template-columns: 1fr; }
+    .about-visual { min-height: 300px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 50px; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .values-strip { grid-template-columns: 1fr; }
+    .value-item { border-right: none; border-bottom: 1px solid rgba(201,168,76,0.15); }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 0 1.2rem; }
+    .nav-links { gap: 1.4rem; }
+    .nav-links a { font-size: 0.7rem; }
+    .hero-content { padding: 0 1.2rem; }
+    section { padding: 80px 1.2rem; }
+    .about-content { padding: 50px 7%; }
+    .about-stats { flex-wrap: wrap; gap: 1.8rem; }
+    .footer-top { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .btn-outline { margin-left: 0; margin-top: 0.8rem; display: block; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">Norah <span>Jewelry</span></a>
+  <ul class="nav-links">
+    <li><a href="#rings">Rings</a></li>
+    <li><a href="#necklaces">Necklaces</a></li>
+    <li><a href="#bracelets">Bracelets</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-decor">
+    <div class="ring-decor"></div>
+    <div class="ring-decor"></div>
+    <div class="ring-decor"></div>
+    <div class="ring-decor"></div>
+  </div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Handcrafted with intention</p>
+    <h1 class="hero-title">Jewelry that tells<br><em>your story</em></h1>
+    <p class="hero-subtitle">Each piece at Norah is a quiet poem — shaped by hand, finished with care, and designed to be worn for a lifetime.</p>
+    <a href="#rings" class="btn-primary">Explore Collection</a>
+    <a href="#about" class="btn-outline">Our Story</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</div>
+
+<!-- RINGS -->
+<section id="rings" class="rings-section">
+  <div class="section-header reveal">
+    <span class="section-tag">Collection I</span>
+    <h2 class="section-title">Rings</h2>
+    <span class="section-divider"></span>
+    <p class="section-desc">From delicate solitaires to sculptural statement pieces, each ring is cast with precious metals and finished by our artisans.</p>
+  </div>
+  <div class="product-grid">
+    <div class="product-card reveal">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#F5EFE0,#EDE3CF);">
+          <div class="product-icon">💍</div>
+        </div>
+      </div>
+      <span class="product-tag">New</span>
+      <div class="product-info">
+        <p class="product-name">Eternal Solitaire</p>
+        <p class="product-material">18K Gold · Diamond</p>
+        <p class="product-price">SAR 3,800</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.1s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#EAE4F0,#DDD5EA);">
+          <div class="product-icon">💍</div>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Celestia Band</p>
+        <p class="product-material">Sterling Silver · Amethyst</p>
+        <p class="product-price">SAR 1,450</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.2s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#F0E8DC,#E4D5C0);">
+          <div class="product-icon">💍</div>
+        </div>
+      </div>
+      <span class="product-tag">Bestseller</span>
+      <div class="product-info">
+        <p class="product-name">Dune Sculptural</p>
+        <p class="product-material">22K Gold · Rose Cut</p>
+        <p class="product-price">SAR 5,200</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.3s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#E8F0EA,#D5E4D8);">
+          <div class="product-icon">💍</div>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Mirage Stacker</p>
+        <p class="product-material">White Gold · Emerald</p>
+        <p class="product-price">SAR 2,650</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE BANNER -->
+<div class="feature-banner">
+  <h2 class="feature-banner-title">Made to be <em>treasured</em>,<br>not just worn.</h2>
+  <p>Every Norah piece arrives in a handcrafted keepsake box, accompanied by its certificate of authenticity and provenance.</p>
+  <a href="#contact" class="btn-gold">Request a Custom Piece</a>
+</div>
+
+<!-- NECKLACES -->
+<section id="necklaces" class="necklaces-section">
+  <div class="section-header reveal">
+    <span class="section-tag">Collection II</span>
+    <h2 class="section-title">Necklaces</h2>
+    <span class="section-divider"></span>
+    <p class="section-desc">Pendants and chains that fall beautifully — each one a meditation on light, form, and the intimacy of adornment.</p>
+  </div>
+  <div class="product-grid">
+    <div class="product-card reveal">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#F5EAE0,#EAD8C8);">
+          <div class="product-icon">📿</div>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Lunar Drop Pendant</p>
+        <p class="product-material">18K Gold · Pearl</p>
+        <p class="product-price">SAR 2,200</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.1s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#EAF0F5,#D0E0EC);">
+          <div class="product-icon">📿</div>
+        </div>
+      </div>
+      <span class="product-tag">Limited</span>
+      <div class="product-info">
+        <p class="product-name">Sapphire Thread</p>
+        <p class="product-material">White Gold · Sapphire</p>
+        <p class="product-price">SAR 4,600</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.2s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#F0EAE0,#E4D6C4);">
+          <div class="product-icon">📿</div>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Desert Arc Chain</p>
+        <p class="product-material">22K Gold · Matte Finish</p>
+        <p class="product-price">SAR 3,900</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRACELETS -->
+<section id="bracelets" class="bracelets-section">
+  <div class="section-header reveal">
+    <span class="section-tag">Collection III</span>
+    <h2 class="section-title">Bracelets</h2>
+    <span class="section-divider"></span>
+    <p class="section-desc">Wrist wear for every mood — stacked or alone, our bracelets are designed to move with you through each moment.</p>
+  </div>
+  <div class="product-grid">
+    <div class="product-card reveal">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#EDE8F5,#DDD5EA);">
+          <div class="product-icon">⌚</div>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Serpent Cuff</p>
+        <p class="product-material">18K Gold · Brushed</p>
+        <p class="product-price">SAR 2,800</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.1s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#F5F0E0,#EDE5C8);">
+          <div class="product-icon">⌚</div>
+        </div>
+      </div>
+      <span class="product-tag">New</span>
+      <div class="product-info">
+        <p class="product-name">Soleil Tennis</p>
+        <p class="product-material">White Gold · Diamonds</p>
+        <p class="product-price">SAR 7,400</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.2s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#E8F0E8,#D4E4D4);">
+          <div class="product-icon">⌚</div>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Oasis Bangle Set</p>
+        <p class="product-material">Sterling Silver · Jade</p>
+        <p class="product-price">SAR 1,900</p>
+      </div>
+    </div>
+    <div class="product-card reveal" style="transition-delay:0.3s">
+      <div class="product-img">
+        <div class="product-placeholder" style="background: linear-gradient(145deg,#F0EAE8,#E4D4D0);">
+          <div class="product-icon">⌚</div>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-name">Dusk Chain Wrap</p>
+        <p class="product-material">Rose Gold · Layered</p>
+        <p class="product-price">SAR 2,100</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES STRIP -->
+<div class="values-strip">
+  <div class="value-item">
+    <div class="value-icon">✦</div>
+    <p class="value-name">Ethically Sourced</p>
+    <p class="value-desc">Every gemstone is traced to conflict-free origins and certified by international standards.</p>
+  </div>
+  <div class="value-item">
+    <div class="value-icon">◇</div>
+    <p class="value-name">Artisan Crafted</p>
+    <p class="value-desc">Shaped by hand in our Riyadh atelier by master jewelers with decades of experience.</p>
+  </div>
+  <div class="value-item">
+    <div class="value-icon">◯</div>
+    <p class="value-name">Lifetime Guarantee</p>
+    <p class="value-desc">We stand behind every piece — complimentary resizing, polishing, and repair for life.</p>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="about-section">
+  <div class="about-visual">
+    <div class="about-visual-inner">
+      <div class="about-ring"></div>
+      <div class="about-ring"></div>
+      <div class="about-ring"></div>
+      <div class="about-monogram">N</div>
+    </div>
+  </div>
+  <div class="about-content">
+    <span class="section-tag">Our Story</span>
+    <h2 class="about-title">Born from a love of<br><em>quiet beauty</em></h2>
+    <p class="about-body">Norah Jewelry was founded in Riyadh with a single belief: that jewelry should feel as meaningful as it looks. We work only with precious metals and ethically sourced stones, taking the time to craft each piece as if it were the only one.</p>
+    <p class="about-body">Our designs draw from the geometry of desert landscapes, the rhythm of Arabic calligraphy, and the timeless vocabulary of fine jewelry — always refined, always personal.</p>
+    <div class="about-stats">
+      <div>
+        <span class="stat-num">12+</span>
+        <span class="stat-label">Years of craft</span>
+      </div>
+      <div>
+        <span class="stat-num">4K+</span>
+        <span class="stat-label">Pieces made</span>
+      </div>
+      <div>
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Ethically sourced</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="section-header reveal">
+    <span class="section-tag">Get in Touch</span>
+    <h2 class="section-title">Contact Us</h2>
+    <span class="section-divider"></span>
+    <p class="section-desc">Whether you have a question, a custom request, or simply want to say hello — we'd love to hear from you.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <h3>Visit Our Atelier</h3>
+      <p>We welcome appointments at our Riyadh showroom, where you can browse the full collection and consult with our team.</p>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">◎</span>
+        <div class="contact-detail-text">
+          <span class="contact-detail-label">Location</span>
+          Al Nakheel District, Riyadh<br>Kingdom of Saudi Arabia
+        </div>
+      </div>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">◎</span>
+        <div class="contact-detail-text">
+          <span class="contact-detail-label">Email</span>
+          hello@norahjewelry.com
+        </div>
+      </div>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">◎</span>
+        <div class="contact-detail-text">
+          <span class="contact-detail-label">Phone</span>
+          +966 11 000 0000
+        </div>
+      </div>
+      <div class="contact-detail">
+        <span class="contact-detail-icon">◎</span>
+        <div class="contact-detail-text">
+          <span class="contact-detail-label">Hours</span>
+          Sunday – Thursday: 10am – 8pm<br>Saturday: 11am – 6pm
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal" style="transition-delay:0.15s">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Norah">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Al-Rashid">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <select>
+          <option value="">Select a topic…</option>
+          <option>Custom Order</option>
+          <option>Product Inquiry</option>
+          <option>Appointment Request</option>
+          <option>After-Sales Service</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea placeholder="Tell us how we can help…"></textarea>
+      </div>
+      <button class="btn-submit">Send Message</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">Norah <span>Jewelry</span></div>
+      <p class="footer-tagline">Fine jewelry crafted with intention for women who know their worth.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Collections</h4>
+      <ul>
+        <li><a href="#rings">Rings</a></li>
+        <li><a href="#necklaces">Necklaces</a></li>
+        <li><a href="#bracelets">Bracelets</a></li>
+        <li><a href="#contact">Custom Order</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">Our Story</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Certifications</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#">Sizing Guide</a></li>
+        <li><a href="#">Care & Repair</a></li>
+        <li><a href="#">Returns</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Norah Jewelry. All rights reserved.</span>
+    <div class="social-links">
+      <a href="#">Instagram</a>
+      <a href="#">Pinterest</a>
+      <a href="#">WhatsApp</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Navbar shrink
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.height = window.scrollY > 60 ? '56px' : '70px';
+  });
+
+  // Form submit
+  document.querySelector('.btn-submit').addEventListener('click', () => {
+    const btn = document.querySelector('.btn-submit');
+    btn.textContent = 'Message Sent ✦';
+    btn.style.background = '#C9A84C';
+    setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; }, 3000);
+  });
+</script>
+</body>
+</html>
