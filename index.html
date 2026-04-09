@@ -3,903 +3,1652 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Norah Jewelry</title>
+<title>Norah Jewelry — Timeless Elegance</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <style>
-  :root {
-    --cream: #FAF8F4;
-    --warm-white: #F5F0E8;
-    --gold: #C9A84C;
-    --gold-light: #E8D5A3;
-    --gold-dark: #A07830;
-    --charcoal: #2A2520;
-    --stone: #7A7068;
-    --blush: #EFE0D0;
-    --border: rgba(201,168,76,0.25);
-  }
+:root{
+--cream:#FAF8F4;--gold:#C9A84C;--charcoal:#2A2520;--gold-light:#E8D9A0;--gold-dark:#A88A2E;
+--bg:#FAF8F4;--text:#2A2520;--text-light:#6B6560;--border:#E5E0D8;--card-bg:#FFFFFF;
+--serif:'Cormorant Garamond',Georgia,serif;--sans:'Jost','Segoe UI',sans-serif;
+--shadow:0 4px 24px rgba(42,37,32,.08);--shadow-lg:0 12px 48px rgba(42,37,32,.12);
+--radius:12px;--transition:.35s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--cream);color:var(--charcoal);line-height:1.6;overflow-x:hidden;font-weight:400}
+h1,h2,h3,h4,h5{font-family:var(--serif);font-weight:500;line-height:1.2}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:var(--sans);border:none;background:none}
+input,textarea,select{font-family:var(--sans);outline:none}
+img{max-width:100%;display:block}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* LOADER */
+#appLoader{position:fixed;inset:0;z-index:10000;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .5s}
+#appLoader.hidden{opacity:0;pointer-events:none}
+.loader-logo{font-family:var(--serif);font-size:36px;font-weight:300;letter-spacing:6px;color:var(--charcoal);text-transform:uppercase}
+.loader-bar{width:180px;height:2px;background:var(--border);border-radius:2px;overflow:hidden}
+.loader-bar::after{content:'';display:block;width:40%;height:100%;background:var(--gold);border-radius:2px;animation:loaderSlide 1.2s ease-in-out infinite}
+@keyframes loaderSlide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
 
-  html { scroll-behavior: smooth; }
+/* TOAST */
+#toastContainer{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{pointer-events:auto;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:500;color:#fff;background:var(--charcoal);box-shadow:var(--shadow-lg);animation:toastIn .4s ease,toastOut .4s ease 3s forwards;max-width:340px}
+.toast.gold{background:var(--gold)}
+.toast.red{background:#C0392B}
+@keyframes toastIn{from{transform:translateX(120px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toastOut{to{transform:translateX(120px);opacity:0}}
 
-  body {
-    font-family: 'Jost', sans-serif;
-    background: var(--cream);
-    color: var(--charcoal);
-    overflow-x: hidden;
-  }
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,248,244,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow .3s}
+.nav.scrolled{box-shadow:0 2px 20px rgba(42,37,32,.08)}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 32px;height:68px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:var(--serif);font-size:22px;font-weight:400;letter-spacing:4px;text-transform:uppercase;color:var(--charcoal)}
+.nav-brand span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);transition:color var(--transition);position:relative}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:var(--gold);transition:width var(--transition)}
+.nav-links a:hover::after{width:100%}
+.nav-icons{display:flex;align-items:center;gap:16px}
+.nav-icon-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background var(--transition);position:relative}
+.nav-icon-btn:hover{background:rgba(201,168,76,.1)}
+.nav-icon-btn svg{width:20px;height:20px;stroke:var(--charcoal);fill:none;stroke-width:1.8}
+.cart-count{position:absolute;top:2px;right:2px;background:var(--gold);color:#fff;font-size:10px;font-weight:600;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;display:none}
+.cart-count.show{display:flex}
+.hamburger{display:none;flex-direction:column;gap:5px;padding:8px}
+.hamburger span{width:22px;height:1.5px;background:var(--charcoal);transition:var(--transition)}
 
-  /* ── NAVBAR ── */
-  nav {
-    position: fixed; top: 0; width: 100%; z-index: 100;
-    background: rgba(250,248,244,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 5%;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 70px;
-  }
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 32px 80px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--cream) 0%,#F5F0E8 50%,#EDE6D8 100%)}
+.hero-rings{position:absolute;top:50%;right:8%;transform:translateY(-50%)}
+.hero-ring{border:1.5px solid var(--gold-light);border-radius:50%;position:absolute;opacity:.4;animation:ringFloat 8s ease-in-out infinite}
+.hero-ring:nth-child(1){width:300px;height:300px;top:-150px;right:0}
+.hero-ring:nth-child(2){width:220px;height:220px;top:-60px;right:80px;animation-delay:2s}
+.hero-ring:nth-child(3){width:160px;height:160px;top:20px;right:20px;animation-delay:4s}
+@keyframes ringFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+.hero-content{max-width:1280px;margin:0 auto;width:100%;position:relative;z-index:2}
+.hero-sub{font-size:13px;font-weight:500;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.hero h1{font-size:clamp(42px,6vw,80px);font-weight:300;line-height:1.1;margin-bottom:24px;color:var(--charcoal)}
+.hero h1 em{font-style:italic;color:var(--gold);font-weight:400}
+.hero-desc{font-size:17px;color:var(--text-light);max-width:500px;margin-bottom:40px;line-height:1.7}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:50px;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;transition:all var(--transition)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:var(--gold-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,.3)}
+.btn-outline{border:1.5px solid var(--charcoal);color:var(--charcoal)}
+.btn-outline:hover{background:var(--charcoal);color:#fff;transform:translateY(-2px)}
+.btn-sm{padding:10px 22px;font-size:12px}
 
-  .nav-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.7rem; font-weight: 300; letter-spacing: 0.12em;
-    color: var(--charcoal); text-decoration: none;
-  }
-  .nav-logo span { color: var(--gold); }
+/* SECTION */
+.section{padding:100px 32px}
+.section-header{text-align:center;margin-bottom:60px}
+.section-sub{font-size:12px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.section-title{font-size:clamp(32px,4vw,48px);font-weight:400;color:var(--charcoal)}
+.gold-divider{width:60px;height:2px;background:var(--gold);margin:20px auto 0;border-radius:2px}
 
-  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-  .nav-links a {
-    text-decoration: none; font-size: 0.78rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--stone); font-weight: 400;
-    position: relative; padding-bottom: 3px;
-    transition: color 0.3s;
-  }
-  .nav-links a::after {
-    content: ''; position: absolute; bottom: 0; left: 0;
-    width: 0; height: 1px; background: var(--gold);
-    transition: width 0.35s ease;
-  }
-  .nav-links a:hover { color: var(--charcoal); }
-  .nav-links a:hover::after { width: 100%; }
+/* SEARCH */
+.search-wrap{max-width:500px;margin:0 auto 60px;position:relative}
+.search-wrap input{width:100%;padding:14px 20px 14px 48px;border:1.5px solid var(--border);border-radius:50px;font-size:15px;background:#fff;transition:border-color var(--transition)}
+.search-wrap input:focus{border-color:var(--gold)}
+.search-wrap svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--text-light);fill:none;stroke-width:2}
 
-  /* ── HERO ── */
-  .hero {
-    height: 100vh; position: relative;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
-  }
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:28px;max-width:1280px;margin:0 auto}
+.product-card{background:var(--card-bg);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:all var(--transition);cursor:pointer;position:relative}
+.product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.product-card-img{position:relative;overflow:hidden;aspect-ratio:1/1.1}
+.product-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.product-card:hover .product-card-img img{transform:scale(1.08)}
+.product-card-overlay{position:absolute;inset:0;background:rgba(42,37,32,.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--transition)}
+.product-card:hover .product-card-overlay{opacity:1}
+.product-card-overlay .btn{font-size:11px;padding:10px 24px}
+.product-badge{position:absolute;top:14px;left:14px;padding:5px 14px;border-radius:50px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#fff;z-index:2}
+.product-badge.New{background:var(--gold)}
+.product-badge.Bestseller{background:#2A2520}
+.product-badge.Limited{background:#8B4513}
+.quick-add{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;z-index:2;transition:all var(--transition);opacity:0}
+.product-card:hover .quick-add{opacity:1}
+.quick-add:hover{background:var(--gold);color:#fff}
+.quick-add svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5}
+.product-card-info{padding:20px}
+.product-card-info h3{font-size:20px;font-weight:500;margin-bottom:4px}
+.product-card-info .material{font-size:13px;color:var(--text-light);margin-bottom:8px}
+.product-card-info .stars{display:flex;align-items:center;gap:4px;margin-bottom:8px}
+.product-card-info .stars svg{width:14px;height:14px;fill:var(--gold);stroke:none}
+.product-card-info .stars span{font-size:12px;color:var(--text-light)}
+.product-card-info .price{font-size:20px;font-weight:600;color:var(--gold);font-family:var(--sans)}
 
-  .hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 70% 60% at 75% 50%, rgba(201,168,76,0.1) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 80% at 15% 80%, rgba(239,224,208,0.6) 0%, transparent 60%),
-      var(--cream);
-  }
+/* ABOUT */
+.about-section{background:var(--charcoal);color:#fff;position:relative;overflow:hidden}
+.about-section::before{content:'';position:absolute;top:-50%;right:-10%;width:500px;height:500px;border:1px solid rgba(201,168,76,.15);border-radius:50%}
+.about-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-text .section-sub{text-align:left;margin-bottom:12px}
+.about-text .section-title{text-align:left;color:#fff;margin-bottom:24px}
+.about-text p{color:rgba(255,255,255,.7);line-height:1.8;margin-bottom:20px;font-size:15px}
+.about-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.stat-card{text-align:center;padding:28px 20px;background:rgba(255,255,255,.05);border-radius:var(--radius);border:1px solid rgba(201,168,76,.2)}
+.stat-card .num{font-family:var(--serif);font-size:36px;font-weight:400;color:var(--gold);margin-bottom:4px}
+.stat-card .label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5)}
 
-  /* Decorative rings in hero */
-  .hero-decor {
-    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
-  }
-  .ring-decor {
-    position: absolute; border-radius: 50%;
-    border: 1px solid rgba(201,168,76,0.2);
-  }
-  .ring-decor:nth-child(1) { width: 600px; height: 600px; top: -150px; right: -100px; }
-  .ring-decor:nth-child(2) { width: 400px; height: 400px; top: -80px; right: 50px; border-color: rgba(201,168,76,0.12); }
-  .ring-decor:nth-child(3) { width: 200px; height: 200px; bottom: 10%; left: 8%; border-color: rgba(201,168,76,0.18); }
-  .ring-decor:nth-child(4) { width: 80px; height: 80px; bottom: 25%; left: 15%; border-color: rgba(201,168,76,0.3); }
+/* CONTACT */
+.contact-inner{max-width:640px;margin:0 auto}
+.contact-form{display:flex;flex-direction:column;gap:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-light)}
+.form-group input,.form-group textarea,.form-group select{padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:#fff;transition:border-color var(--transition)}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--gold)}
+.form-group textarea{resize:vertical;min-height:120px}
 
-  .hero-content {
-    position: relative; z-index: 2;
-    text-align: center; max-width: 720px; padding: 0 2rem;
-    animation: fadeUp 1.1s ease both;
-  }
+/* FOOTER */
+.footer{background:var(--charcoal);color:#fff;padding:60px 32px 30px}
+.footer-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand{font-family:var(--serif);font-size:22px;letter-spacing:4px;text-transform:uppercase;margin-bottom:16px}
+.footer-brand span{color:var(--gold)}
+.footer p{color:rgba(255,255,255,.5);font-size:13px;line-height:1.7}
+.footer h4{font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;color:var(--gold)}
+.footer-links a{display:block;color:rgba(255,255,255,.5);font-size:13px;margin-bottom:10px;transition:color var(--transition)}
+.footer-links a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:24px;text-align:center;font-size:12px;color:rgba(255,255,255,.3)}
 
-  .hero-eyebrow {
-    font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 1.5rem; font-weight: 400;
-  }
+/* CART DRAWER */
+.cart-overlay{position:fixed;inset:0;background:rgba(42,37,32,.4);z-index:2000;opacity:0;pointer-events:none;transition:opacity .3s}
+.cart-overlay.open{opacity:1;pointer-events:auto}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:95vw;background:#fff;z-index:2001;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.cart-drawer.open{transform:translateX(0)}
+.cart-header{padding:24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.cart-header h2{font-size:22px;font-weight:500}
+.cart-close{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background var(--transition)}
+.cart-close:hover{background:rgba(0,0,0,.06)}
+.cart-close svg{width:20px;height:20px;stroke:var(--charcoal);fill:none;stroke-width:2}
+.cart-body{flex:1;overflow-y:auto;padding:20px 24px}
+.cart-empty{text-align:center;padding:60px 20px;color:var(--text-light)}
+.cart-item{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
+.cart-item-img{width:72px;height:72px;border-radius:8px;overflow:hidden;flex-shrink:0}
+.cart-item-img img{width:100%;height:100%;object-fit:cover}
+.cart-item-info{flex:1}
+.cart-item-info h4{font-size:15px;font-weight:500;margin-bottom:2px}
+.cart-item-info .material{font-size:12px;color:var(--text-light);margin-bottom:8px}
+.cart-item-info .price{font-size:15px;font-weight:600;color:var(--gold)}
+.cart-item-actions{display:flex;align-items:center;gap:8px;margin-top:8px}
+.qty-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;transition:all var(--transition)}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qty-val{font-size:14px;font-weight:600;min-width:24px;text-align:center}
+.cart-item-remove{margin-left:auto;color:var(--text-light);font-size:12px;transition:color var(--transition)}
+.cart-item-remove:hover{color:#C0392B}
+.cart-footer{padding:24px;border-top:1px solid var(--border)}
+.cart-subtotal{display:flex;justify-content:space-between;margin-bottom:16px;font-size:16px;font-weight:600}
+.cart-subtotal span:last-child{color:var(--gold);font-size:20px}
 
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3.2rem, 7vw, 6rem);
-    font-weight: 300; line-height: 1.08;
-    color: var(--charcoal); margin-bottom: 1.6rem;
-  }
-  .hero-title em { font-style: italic; color: var(--gold-dark); }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(42,37,32,.5);z-index:3000;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:#fff;border-radius:16px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:scale(.95);transition:transform .3s;position:relative}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;z-index:2;transition:background var(--transition)}
+.modal-close:hover{background:#fff}
+.modal-close svg{width:18px;height:18px;stroke:var(--charcoal);fill:none;stroke-width:2}
+.modal-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.modal-img{aspect-ratio:1;overflow:hidden}
+.modal-img img{width:100%;height:100%;object-fit:cover}
+.modal-info{padding:36px}
+.modal-info .cat{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.modal-info h2{font-size:28px;font-weight:500;margin-bottom:4px}
+.modal-info .material{font-size:14px;color:var(--text-light);margin-bottom:12px}
+.modal-info .stars{display:flex;align-items:center;gap:4px;margin-bottom:16px}
+.modal-info .stars svg{width:16px;height:16px;fill:var(--gold);stroke:none}
+.modal-info .stars span{font-size:13px;color:var(--text-light);margin-left:4px}
+.modal-info .price{font-size:28px;font-weight:600;color:var(--gold);margin-bottom:16px}
+.modal-info .desc{font-size:14px;color:var(--text-light);line-height:1.7;margin-bottom:20px}
+.modal-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;font-size:13px}
+.modal-details div{padding:8px 12px;background:var(--cream);border-radius:6px}
+.modal-details div strong{font-weight:600}
+.modal-qty{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.modal-qty label{font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.modal-btns{display:flex;gap:12px;flex-wrap:wrap}
+.stock-status{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;margin-bottom:16px}
+.stock-status .dot{width:8px;height:8px;border-radius:50%}
+.stock-status .dot.in{background:#27AE60}
+.stock-status .dot.out{background:#C0392B}
+.modal-reviews{padding:36px;border-top:1px solid var(--border);grid-column:1/-1}
+.modal-reviews h3{font-size:22px;font-weight:500;margin-bottom:20px}
+.review-summary{display:flex;gap:32px;margin-bottom:24px;align-items:flex-start}
+.review-avg{text-align:center;padding:20px}
+.review-avg .big{font-family:var(--serif);font-size:48px;font-weight:400;color:var(--charcoal)}
+.review-avg .stars-row{display:flex;gap:2px;justify-content:center;margin:4px 0}
+.review-avg .stars-row svg{width:16px;height:16px;fill:var(--gold)}
+.review-avg .count{font-size:13px;color:var(--text-light)}
+.review-bars{flex:1}
+.review-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px}
+.review-bar-row span:first-child{width:16px;text-align:right;font-weight:600}
+.review-bar-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.review-bar-fill{height:100%;background:var(--gold);border-radius:4px;transition:width .5s}
+.review-bar-row span:last-child{width:28px;color:var(--text-light);font-size:12px}
+.review-card{padding:16px;border:1px solid var(--border);border-radius:10px;margin-bottom:12px}
+.review-card-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.review-card-header .name{font-weight:600;font-size:14px}
+.review-card-header .verified{font-size:11px;color:#27AE60;font-weight:500}
+.review-card-header .date{margin-left:auto;font-size:12px;color:var(--text-light)}
+.review-card .stars-row{display:flex;gap:2px;margin-bottom:6px}
+.review-card .stars-row svg{width:14px;height:14px;fill:var(--gold)}
+.review-card p{font-size:14px;color:var(--text-light);line-height:1.6}
+.review-form{margin-top:24px;padding:20px;background:var(--cream);border-radius:10px}
+.review-form h4{font-size:16px;font-weight:500;margin-bottom:12px}
+.star-picker{display:flex;gap:4px;margin-bottom:12px}
+.star-picker button{background:none;padding:2px}
+.star-picker button svg{width:24px;height:24px;fill:var(--border);stroke:none;transition:fill .2s}
+.star-picker button.active svg,.star-picker button:hover svg{fill:var(--gold)}
+.review-form textarea{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;min-height:80px;resize:vertical;margin-bottom:12px}
+.review-form textarea:focus{border-color:var(--gold)}
 
-  .hero-subtitle {
-    font-size: 0.9rem; letter-spacing: 0.06em; color: var(--stone);
-    line-height: 1.9; max-width: 480px; margin: 0 auto 2.8rem;
-  }
+/* AUTH PAGES */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--cream)}
+.auth-card{background:#fff;border-radius:16px;padding:48px;max-width:440px;width:100%;box-shadow:var(--shadow-lg)}
+.auth-card .logo{font-family:var(--serif);font-size:24px;letter-spacing:4px;text-transform:uppercase;text-align:center;margin-bottom:8px}
+.auth-card .logo span{color:var(--gold)}
+.auth-card h2{font-size:26px;font-weight:400;text-align:center;margin-bottom:24px}
+.auth-card .subtitle{text-align:center;color:var(--text-light);font-size:14px;margin-bottom:24px}
+.auth-error{background:#FEF2F2;color:#C0392B;padding:10px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+.auth-form{display:flex;flex-direction:column;gap:14px}
+.auth-form .form-group input{width:100%}
+.auth-switch{text-align:center;margin-top:20px;font-size:14px;color:var(--text-light)}
+.auth-switch a{color:var(--gold);font-weight:600}
 
-  .btn-primary {
-    display: inline-block; padding: 14px 44px;
-    background: var(--charcoal); color: var(--cream);
-    text-decoration: none; font-size: 0.75rem; letter-spacing: 0.22em;
-    text-transform: uppercase; font-weight: 400;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .btn-primary:hover { background: var(--gold-dark); transform: translateY(-1px); }
+/* DASHBOARD */
+.dash-page{min-height:100vh;background:var(--cream)}
+.dash-header{background:#fff;border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.dash-header .logo{font-family:var(--serif);font-size:20px;letter-spacing:3px;text-transform:uppercase}
+.dash-header .logo span{color:var(--gold)}
+.dash-header-right{display:flex;align-items:center;gap:16px}
+.dash-user{font-size:14px;font-weight:500}
+.dash-layout{display:flex;min-height:calc(100vh - 64px)}
+.dash-sidebar{width:240px;background:#fff;border-right:1px solid var(--border);padding:24px 0;flex-shrink:0}
+.dash-nav a{display:flex;align-items:center;gap:12px;padding:12px 24px;font-size:14px;font-weight:500;color:var(--text-light);transition:all var(--transition)}
+.dash-nav a:hover,.dash-nav a.active{color:var(--gold);background:rgba(201,168,76,.06)}
+.dash-nav a.active{border-right:3px solid var(--gold)}
+.dash-nav a svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+.dash-content{flex:1;padding:32px;overflow-y:auto}
+.dash-content h2{font-size:28px;font-weight:400;margin-bottom:24px}
+.dash-panel{display:none}
+.dash-panel.active{display:block}
 
-  .btn-outline {
-    display: inline-block; padding: 13px 36px;
-    border: 1px solid var(--gold); color: var(--gold-dark);
-    text-decoration: none; font-size: 0.75rem; letter-spacing: 0.22em;
-    text-transform: uppercase; font-weight: 400; margin-left: 1rem;
-    transition: all 0.3s;
-  }
-  .btn-outline:hover { background: var(--gold); color: var(--cream); }
+/* STAT CARDS */
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;margin-bottom:32px}
+.stat-card-dash{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.stat-card-dash .label{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);margin-bottom:8px}
+.stat-card-dash .num{font-family:var(--serif);font-size:32px;font-weight:400;color:var(--charcoal)}
 
-  .hero-scroll {
-    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
-    color: var(--stone); animation: fadeUp 1.5s 0.5s ease both;
-  }
-  .scroll-line {
-    width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
+/* TABLES */
+.dash-table{width:100%;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.dash-table table{width:100%;border-collapse:collapse}
+.dash-table th{padding:14px 16px;text-align:left;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);background:var(--cream);border-bottom:1px solid var(--border)}
+.dash-table td{padding:12px 16px;font-size:14px;border-bottom:1px solid var(--border)}
+.dash-table tr:last-child td{border-bottom:none}
+.status-badge{display:inline-block;padding:4px 12px;border-radius:50px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.status-badge.pending{background:#FEF3C7;color:#92400E}
+.status-badge.processing{background:#DBEAFE;color:#1E40AF}
+.status-badge.delivered{background:#D1FAE5;color:#065F46}
+.status-badge.cancelled{background:#FEE2E2;color:#991B1B}
+.status-select{padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--sans)}
 
-  /* ── SECTION SHELL ── */
-  section { padding: 110px 5%; }
+/* ADD ITEM FORM */
+.add-form{background:#fff;border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);max-width:700px}
+.add-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.toggle-group{display:flex;align-items:center;gap:12px}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background var(--transition)}
+.toggle.on{background:var(--gold)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform var(--transition);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.toggle.on::after{transform:translateX(20px)}
 
-  .section-header {
-    text-align: center; margin-bottom: 70px;
-  }
-  .section-tag {
-    font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--gold); display: block; margin-bottom: 1rem;
-  }
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 300;
-    color: var(--charcoal); line-height: 1.15;
-  }
-  .section-divider {
-    width: 50px; height: 1px; background: var(--gold);
-    margin: 1.4rem auto 1.4rem; display: block;
-  }
-  .section-desc {
-    max-width: 480px; margin: 0 auto;
-    font-size: 0.88rem; color: var(--stone); line-height: 1.9; letter-spacing: 0.03em;
-  }
+/* CHECKOUT */
+.checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.order-summary{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.order-summary h3{font-size:20px;font-weight:500;margin-bottom:16px}
+.order-summary-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.order-summary-item img{width:56px;height:56px;border-radius:8px;object-fit:cover}
+.order-summary-item .info{flex:1}
+.order-summary-item .info h4{font-size:14px;font-weight:500}
+.order-summary-item .info .sub{font-size:12px;color:var(--text-light)}
+.order-summary-item .info .price{font-size:14px;font-weight:600;color:var(--gold)}
+.order-summary-total{display:flex;justify-content:space-between;padding:16px 0 0;font-size:18px;font-weight:600}
+.order-summary-total span:last-child{color:var(--gold)}
+.payment-card-preview{background:linear-gradient(135deg,#2A2520,#4A453E);border-radius:14px;padding:24px;color:#fff;margin-bottom:24px;aspect-ratio:1.6/1;max-width:380px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow-lg)}
+.payment-card-preview .chip{width:40px;height:28px;background:linear-gradient(135deg,var(--gold-light),var(--gold));border-radius:5px}
+.payment-card-preview .card-number{font-size:20px;letter-spacing:3px;font-weight:300;font-family:var(--sans)}
+.payment-card-preview .card-bottom{display:flex;justify-content:space-between;align-items:flex-end}
+.payment-card-preview .card-name{font-size:13px;text-transform:uppercase;letter-spacing:2px}
+.payment-card-preview .card-brand{font-size:18px;font-weight:600;font-family:var(--serif);letter-spacing:2px}
+.payment-form{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.payment-form h3{font-size:20px;font-weight:500;margin-bottom:16px}
 
-  /* ── PRODUCT GRID ── */
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2px;
-    max-width: 1200px; margin: 0 auto;
-  }
+/* INVOICE */
+.invoice-wrap{background:#fff;border-radius:var(--radius);padding:48px;box-shadow:var(--shadow);max-width:800px;margin:0 auto}
+.invoice-header{display:flex;justify-content:space-between;margin-bottom:32px;padding-bottom:24px;border-bottom:2px solid var(--gold)}
+.invoice-header .brand{font-family:var(--serif);font-size:28px;letter-spacing:4px;text-transform:uppercase}
+.invoice-header .brand span{color:var(--gold)}
+.invoice-header .info{text-align:right;font-size:13px;color:var(--text-light)}
+.invoice-meta{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
+.invoice-meta .block h4{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px}
+.invoice-meta .block p{font-size:14px;margin-bottom:2px}
+.invoice-table{width:100%;border-collapse:collapse;margin-bottom:24px}
+.invoice-table th{padding:10px 12px;text-align:left;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);border-bottom:2px solid var(--border)}
+.invoice-table td{padding:10px 12px;font-size:14px;border-bottom:1px solid var(--border)}
+.invoice-table .total-row td{border-top:2px solid var(--charcoal);font-weight:600;font-size:16px}
+.invoice-footer{text-align:center;color:var(--text-light);font-size:13px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
 
-  .product-card {
-    position: relative; overflow: hidden; cursor: pointer;
-    background: var(--warm-white);
-  }
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
-  .product-img {
-    width: 100%; aspect-ratio: 3/4; overflow: hidden;
-    position: relative;
-  }
+/* RESPONSIVE */
+@media(max-width:900px){
+.modal-body{grid-template-columns:1fr}
+.about-inner{grid-template-columns:1fr}
+.checkout-grid{grid-template-columns:1fr}
+.footer-inner{grid-template-columns:1fr 1fr}
+.dash-sidebar{width:180px}
+}
+@media(max-width:700px){
+.nav-links{display:none}
+.hamburger{display:flex}
+.hero h1{font-size:36px}
+.products-grid{grid-template-columns:1fr 1fr}
+.footer-inner{grid-template-columns:1fr}
+.dash-layout{flex-direction:column}
+.dash-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:12px 0}
+.dash-nav{display:flex;overflow-x:auto;gap:0}
+.dash-nav a{white-space:nowrap;border-right:none !important;padding:10px 16px}
+.dash-nav a.active{border-bottom:3px solid var(--gold);border-right:none}
+}
+@media(max-width:480px){.products-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
 
-  .product-placeholder {
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 12px;
-    transition: transform 0.6s ease;
-  }
-
-  .product-card:hover .product-placeholder { transform: scale(1.04); }
-
-  .product-icon {
-    font-size: 3.5rem; opacity: 0.55;
-    transition: opacity 0.3s, transform 0.3s;
-  }
-  .product-card:hover .product-icon { opacity: 0.85; transform: scale(1.1) rotate(-5deg); }
-
-  .product-info {
-    padding: 22px 24px 26px;
-    border-top: 1px solid var(--border);
-  }
-  .product-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem; font-weight: 400; color: var(--charcoal);
-    margin-bottom: 5px; letter-spacing: 0.02em;
-  }
-  .product-material {
-    font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--stone); margin-bottom: 12px;
-  }
-  .product-price {
-    font-size: 0.9rem; color: var(--gold-dark); letter-spacing: 0.05em;
-  }
-
-  .product-tag {
-    position: absolute; top: 16px; left: 16px;
-    background: var(--charcoal); color: var(--cream);
-    font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
-    padding: 4px 10px;
-  }
-
-  /* Palette variants per section */
-  .rings-section { background: var(--cream); }
-  .necklaces-section { background: var(--warm-white); }
-  .bracelets-section { background: var(--cream); }
-
-  /* Necklaces: different layout */
-  .necklaces-section .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-  .necklaces-section .product-img { aspect-ratio: 1/1; }
-
-  /* ── FEATURE BANNER ── */
-  .feature-banner {
-    background: var(--charcoal);
-    padding: 90px 5%; text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .feature-banner::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 120% at 50% 50%, rgba(201,168,76,0.12) 0%, transparent 70%);
-  }
-  .feature-banner-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300;
-    color: var(--cream); line-height: 1.25;
-    position: relative; margin-bottom: 1.8rem;
-  }
-  .feature-banner-title em { color: var(--gold); font-style: italic; }
-  .feature-banner p {
-    color: rgba(250,248,244,0.55); max-width: 480px; margin: 0 auto 2.5rem;
-    font-size: 0.88rem; line-height: 1.9; position: relative;
-  }
-  .btn-gold {
-    display: inline-block; padding: 14px 44px;
-    background: var(--gold); color: var(--charcoal);
-    text-decoration: none; font-size: 0.75rem; letter-spacing: 0.22em;
-    text-transform: uppercase; font-weight: 500; position: relative;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
-
-  /* ── ABOUT ── */
-  .about-section {
-    background: var(--blush);
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 0; padding: 0; align-items: stretch;
-  }
-
-  .about-visual {
-    background: var(--warm-white);
-    display: flex; align-items: center; justify-content: center;
-    min-height: 560px; position: relative; overflow: hidden;
-  }
-
-  .about-visual-inner {
-    position: relative; width: 280px; height: 280px;
-  }
-  .about-ring {
-    position: absolute; border-radius: 50%;
-    border: 1px solid rgba(201,168,76,0.4);
-  }
-  .about-ring:nth-child(1) { inset: 0; border-width: 2px; border-color: var(--gold-light); }
-  .about-ring:nth-child(2) { inset: 30px; border-color: rgba(201,168,76,0.3); }
-  .about-ring:nth-child(3) { inset: 70px; border-color: rgba(201,168,76,0.5); border-width: 2px; }
-  .about-monogram {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 4rem; font-weight: 300; color: var(--gold);
-    letter-spacing: -0.02em; font-style: italic;
-  }
-
-  .about-content {
-    padding: 80px 8%;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-
-  .about-content .section-tag { text-align: left; }
-  .about-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 300;
-    color: var(--charcoal); line-height: 1.2; margin-bottom: 1.8rem;
-  }
-  .about-title em { color: var(--gold-dark); font-style: italic; }
-  .about-body {
-    font-size: 0.88rem; color: var(--stone); line-height: 2;
-    margin-bottom: 1.4rem; letter-spacing: 0.02em;
-  }
-
-  .about-stats {
-    display: flex; gap: 2.5rem; margin-top: 2.5rem;
-  }
-  .stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.2rem; font-weight: 300; color: var(--gold-dark);
-    display: block; line-height: 1;
-  }
-  .stat-label {
-    font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--stone); display: block; margin-top: 5px;
-  }
-
-  /* ── VALUES ── */
-  .values-strip {
-    background: var(--charcoal); padding: 60px 5%;
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-  }
-  .value-item {
-    padding: 40px 5%; text-align: center;
-    border-right: 1px solid rgba(201,168,76,0.15);
-  }
-  .value-item:last-child { border-right: none; }
-  .value-icon { font-size: 1.6rem; margin-bottom: 14px; }
-  .value-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem; color: var(--cream); font-weight: 300;
-    margin-bottom: 8px; letter-spacing: 0.04em;
-  }
-  .value-desc { font-size: 0.78rem; color: rgba(250,248,244,0.45); line-height: 1.8; letter-spacing: 0.03em; }
-
-  /* ── CONTACT ── */
-  .contact-section { background: var(--cream); }
-  .contact-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 80px; max-width: 1000px; margin: 0 auto;
-  }
-
-  .contact-info h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem; font-weight: 300; color: var(--charcoal);
-    margin-bottom: 1.2rem; letter-spacing: 0.04em;
-  }
-  .contact-info p {
-    font-size: 0.86rem; color: var(--stone); line-height: 2; margin-bottom: 2rem;
-  }
-  .contact-detail {
-    display: flex; align-items: flex-start; gap: 14px; margin-bottom: 1.4rem;
-  }
-  .contact-detail-icon { font-size: 1rem; margin-top: 2px; }
-  .contact-detail-text {
-    font-size: 0.82rem; color: var(--charcoal); line-height: 1.7;
-  }
-  .contact-detail-label {
-    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--gold); display: block; margin-bottom: 3px;
-  }
-
-  .contact-form { display: flex; flex-direction: column; gap: 18px; }
-
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label {
-    font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--stone);
-  }
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    background: transparent;
-    border: none; border-bottom: 1px solid rgba(42,37,32,0.2);
-    padding: 10px 0; font-family: 'Jost', sans-serif;
-    font-size: 0.88rem; color: var(--charcoal);
-    outline: none; transition: border-color 0.3s;
-    appearance: none;
-  }
-  .form-group input:focus,
-  .form-group textarea:focus,
-  .form-group select:focus { border-color: var(--gold); }
-  .form-group textarea { resize: none; height: 100px; }
-  .form-group input::placeholder,
-  .form-group textarea::placeholder { color: rgba(122,112,104,0.5); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-
-  .btn-submit {
-    padding: 14px 40px; background: var(--charcoal); color: var(--cream);
-    border: none; cursor: pointer; font-family: 'Jost', sans-serif;
-    font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase;
-    margin-top: 8px; align-self: flex-start;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .btn-submit:hover { background: var(--gold-dark); transform: translateY(-1px); }
-
-  /* ── FOOTER ── */
-  footer {
-    background: var(--charcoal); padding: 70px 5% 30px;
-  }
-  .footer-top {
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 50px; padding-bottom: 50px;
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-    margin-bottom: 30px;
-  }
-  .footer-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.6rem; font-weight: 300; color: var(--cream);
-    letter-spacing: 0.1em; margin-bottom: 1rem;
-  }
-  .footer-brand span { color: var(--gold); }
-  .footer-tagline {
-    font-size: 0.8rem; color: rgba(250,248,244,0.4); line-height: 1.8;
-    max-width: 220px;
-  }
-
-  .footer-col h4 {
-    font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 1.4rem;
-  }
-  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
-  .footer-col ul li a {
-    font-size: 0.8rem; color: rgba(250,248,244,0.45); text-decoration: none;
-    letter-spacing: 0.05em; transition: color 0.3s;
-  }
-  .footer-col ul li a:hover { color: var(--cream); }
-
-  .footer-bottom {
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .footer-copy {
-    font-size: 0.72rem; color: rgba(250,248,244,0.3); letter-spacing: 0.08em;
-  }
-  .social-links { display: flex; gap: 18px; }
-  .social-links a {
-    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: rgba(250,248,244,0.35); text-decoration: none; transition: color 0.3s;
-  }
-  .social-links a:hover { color: var(--gold); }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(28px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.4; transform: scaleY(0.8); }
-    50% { opacity: 1; transform: scaleY(1); }
-  }
-
-  .reveal {
-    opacity: 0; transform: translateY(24px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    .about-section { grid-template-columns: 1fr; }
-    .about-visual { min-height: 300px; }
-    .contact-grid { grid-template-columns: 1fr; gap: 50px; }
-    .footer-top { grid-template-columns: 1fr 1fr; }
-    .values-strip { grid-template-columns: 1fr; }
-    .value-item { border-right: none; border-bottom: 1px solid rgba(201,168,76,0.15); }
-  }
-  @media (max-width: 600px) {
-    nav { padding: 0 1.2rem; }
-    .nav-links { gap: 1.4rem; }
-    .nav-links a { font-size: 0.7rem; }
-    .hero-content { padding: 0 1.2rem; }
-    section { padding: 80px 1.2rem; }
-    .about-content { padding: 50px 7%; }
-    .about-stats { flex-wrap: wrap; gap: 1.8rem; }
-    .footer-top { grid-template-columns: 1fr; }
-    .form-row { grid-template-columns: 1fr; }
-    .btn-outline { margin-left: 0; margin-top: 0.8rem; display: block; text-align: center; }
-  }
+@media print{
+.no-print{display:none !important}
+body{background:#fff}
+.invoice-wrap{box-shadow:none;padding:0}
+}
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav>
-  <a href="#" class="nav-logo">Norah <span>Jewelry</span></a>
-  <ul class="nav-links">
-    <li><a href="#rings">Rings</a></li>
-    <li><a href="#necklaces">Necklaces</a></li>
-    <li><a href="#bracelets">Bracelets</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
+<!-- LOADER -->
+<div id="appLoader">
+<div class="loader-logo">Norah</div>
+<div class="loader-bar"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toastContainer"></div>
+
+<!-- APP ROOT -->
+<div id="app"></div>
+
+<script>
+// ─── CONFIG ───
+const SUPABASE_URL = 'https://casbthhalqshzhglrcia.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhc2J0aGhhbHFzaHpoZ2xyY2lhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NTA4NzMsImV4cCI6MjA5MTIyNjg3M30.UwPOonzF5vIoaq_-lscZgpUa-sGyLwlKrujU0fDrplU';
+
+const SEED_PRODUCTS = [
+{name:'Eternal Solitaire',category:'Rings',material:'18K Gold · Diamond',price:3800,badge:'New',img_url:'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80&fit=crop',description:'A timeless solitaire ring featuring a brilliant-cut diamond set in 18K gold. The epitome of classic elegance, designed to capture light from every angle.',weight:'4.2g',dimensions:'6mm band width',in_stock:true},
+{name:'Celestia Band',category:'Rings',material:'Sterling Silver · Amethyst',price:1450,badge:'',img_url:'https://images.unsplash.com/photo-1598560917505-59a3ad559071?w=600&q=80&fit=crop',description:'An ethereal band adorned with hand-selected amethyst stones, set in polished sterling silver. A celestial piece for everyday luxury.',weight:'3.1g',dimensions:'4mm band width',in_stock:true},
+{name:'Dune Sculptural',category:'Rings',material:'22K Gold · Rose Cut',price:5200,badge:'Bestseller',img_url:'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80&fit=crop',description:'Inspired by desert landscapes, this sculptural ring features organic curves in rich 22K gold with a stunning rose-cut gemstone centerpiece.',weight:'6.8g',dimensions:'12mm top width',in_stock:true},
+{name:'Mirage Stacker',category:'Rings',material:'White Gold · Emerald',price:2650,badge:'',img_url:'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80&fit=crop',description:'A versatile stacking ring in white gold, accented with a vivid emerald. Mix, match, and layer for a personalized look.',weight:'2.9g',dimensions:'3mm band width',in_stock:true},
+{name:'Lunar Drop Pendant',category:'Necklaces',material:'18K Gold · Pearl',price:2200,badge:'',img_url:'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80&fit=crop',description:'A luminous freshwater pearl suspended from a delicate 18K gold chain. The pendant catches the light like moonlight on water.',weight:'5.4g',dimensions:'18" chain, 15mm pendant',in_stock:true},
+{name:'Sapphire Thread',category:'Necklaces',material:'White Gold · Sapphire',price:4600,badge:'Limited',img_url:'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80&fit=crop',description:'A breathtaking sapphire set on a nearly invisible white gold thread chain. Limited edition — only 50 pieces crafted worldwide.',weight:'3.8g',dimensions:'16" chain, 8mm stone',in_stock:true},
+{name:'Desert Arc Chain',category:'Necklaces',material:'22K Gold · Matte',price:3900,badge:'',img_url:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80&fit=crop',description:'A bold arc pendant on a matte 22K gold chain. Desert-inspired geometry meets modern luxury in this statement necklace.',weight:'12.1g',dimensions:'20" chain, 30mm pendant',in_stock:true},
+{name:'Serpent Cuff',category:'Bracelets',material:'18K Gold · Brushed',price:2800,badge:'',img_url:'https://images.unsplash.com/photo-1573408301185-9519f94816f6?w=600&q=80&fit=crop',description:'A sculptural cuff bracelet with a serpentine form, crafted in brushed 18K gold. A powerful piece that wraps the wrist with sinuous grace.',weight:'28g',dimensions:'60mm diameter, 18mm width',in_stock:true},
+{name:'Soleil Tennis',category:'Bracelets',material:'White Gold · Diamonds',price:7400,badge:'New',img_url:'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80&fit=crop',description:'A dazzling tennis bracelet featuring 42 individually set diamonds in white gold. Each stone is hand-selected for maximum brilliance.',weight:'15.6g',dimensions:'7" length, 3mm width',in_stock:true},
+{name:'Oasis Bangle Set',category:'Bracelets',material:'Sterling Silver · Jade',price:1900,badge:'',img_url:'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=600&q=80&fit=crop',description:'A set of three sterling silver bangles, each adorned with a jade cabochon. Stack together or wear individually for effortless style.',weight:'22g',dimensions:'65mm diameter each',in_stock:true},
+{name:'Dusk Chain Wrap',category:'Bracelets',material:'Rose Gold · Layered',price:2100,badge:'',img_url:'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&q=80&fit=crop',description:'A multi-layered rose gold chain bracelet that wraps the wrist in warm, sunset-inspired tones. Adjustable for the perfect fit.',weight:'8.4g',dimensions:'7-8" adjustable',in_stock:true}
+];
+
+let sb = null;
+let currentUser = null;
+let currentProfile = null;
+let products = [];
+let guestCart = [];
+let currentPage = 'home';
+
+// ─── UTILS ───
+function $(sel, el){return (el||document).querySelector(sel)}
+function $$(sel, el){return [...(el||document).querySelectorAll(sel)]}
+function toast(msg,type=''){
+const t=document.createElement('div');
+t.className='toast'+(type?' '+type:'');
+t.textContent=msg;
+document.getElementById('toastContainer').appendChild(t);
+setTimeout(()=>t.remove(),3600);
+}
+function formatPrice(p){return '$'+Number(p).toLocaleString('en-US',{minimumFractionDigits:0})}
+function starsSVG(n,size=14){
+let s='';for(let i=1;i<=5;i++){
+if(i<=n)s+=`<svg width="${size}" height="${size}" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" fill="#C9A84C"/></svg>`;
+else s+=`<svg width="${size}" height="${size}" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" fill="#E5E0D8"/></svg>`;
+}return s;
+}
+function uuid(){return crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16)})}
+
+// ─── ICONS ───
+const ICONS = {
+search:`<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+cart:`<svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`,
+user:`<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+x:`<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+plus:`<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+minus:`<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+package:`<svg viewBox="0 0 24 24"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+orders:`<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+grid:`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+users:`<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>`,
+dollar:`<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,
+printer:`<svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>`,
+home:`<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+logout:`<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+invoice:`<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+addItem:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+};
+
+// ─── INIT ───
+async function init(){
+sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:false},
+global:{fetch:(...args)=>fetch(...args)}
+});
+
+// auth check with 3s timeout
+try{
+const sessionResult = await Promise.race([
+sb.auth.getSession(),
+new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),3000))
+]);
+if(sessionResult?.data?.session){
+currentUser = sessionResult.data.session.user;
+const{data:prof}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+currentProfile = prof;
+}
+}catch(e){console.log('Auth check:',e.message)}
+
+// Hide loader immediately
+document.getElementById('appLoader').classList.add('hidden');
+setTimeout(()=>{document.getElementById('appLoader').style.display='none'},600);
+
+// Render based on state
+renderApp();
+
+// Load products in background
+loadProducts();
+
+// Listen for auth changes
+sb.auth.onAuthStateChange(async(event,session)=>{
+if(event==='SIGNED_IN'&&session){
+currentUser=session.user;
+const{data:prof}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+currentProfile=prof;
+}else if(event==='SIGNED_OUT'){
+currentUser=null;currentProfile=null;guestCart=[];
+}
+});
+}
+
+async function loadProducts(){
+try{
+let{data,error}=await sb.from('products').select('*').order('created_at',{ascending:true});
+if(error)throw error;
+if(!data||data.length===0){
+const{error:insertErr}=await sb.from('products').insert(SEED_PRODUCTS);
+if(insertErr)throw insertErr;
+const res=await sb.from('products').select('*').order('created_at',{ascending:true});
+data=res.data||[];
+}
+products=data;
+renderProductSections();
+initScrollReveal();
+}catch(e){
+console.error('Products load error:',e);
+products=SEED_PRODUCTS.map((p,i)=>({...p,id:'local-'+i}));
+renderProductSections();
+initScrollReveal();
+}
+}
+
+// ─── ROUTING ───
+function navigate(page,data){
+currentPage=page;
+window.scrollTo(0,0);
+renderApp(data);
+}
+
+function renderApp(data){
+const app=document.getElementById('app');
+if(currentPage==='home'){app.innerHTML=renderHome();bindHome();}
+else if(currentPage==='login'){app.innerHTML=renderAuth('login');bindAuth('login');}
+else if(currentPage==='register'){app.innerHTML=renderAuth('register');bindAuth('register');}
+else if(currentPage==='dashboard'){app.innerHTML=renderDashboard(data);bindDashboard();}
+else if(currentPage==='admin'){app.innerHTML=renderAdmin(data);bindAdmin();}
+}
+
+// ─── HOME PAGE ───
+function renderHome(){
+return `
+<nav class="nav no-print" id="mainNav">
+<div class="nav-inner">
+<a href="#" class="nav-brand" onclick="navigate('home');return false">N<span>o</span>rah</a>
+<div class="nav-links">
+<a href="#rings" onclick="smoothTo('rings')">Rings</a>
+<a href="#necklaces" onclick="smoothTo('necklaces')">Necklaces</a>
+<a href="#bracelets" onclick="smoothTo('bracelets')">Bracelets</a>
+<a href="#about" onclick="smoothTo('about')">About</a>
+<a href="#contact" onclick="smoothTo('contact')">Contact</a>
+</div>
+<div class="nav-icons">
+<button class="nav-icon-btn" onclick="openCart()" title="Cart">${ICONS.cart}<span class="cart-count" id="cartCount">0</span></button>
+<button class="nav-icon-btn" onclick="handleUserClick()" title="Account">${ICONS.user}</button>
+<button class="hamburger no-print" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+</div>
+</div>
 </nav>
 
 <!-- HERO -->
-<div class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-decor">
-    <div class="ring-decor"></div>
-    <div class="ring-decor"></div>
-    <div class="ring-decor"></div>
-    <div class="ring-decor"></div>
-  </div>
-  <div class="hero-content">
-    <p class="hero-eyebrow">Handcrafted with intention</p>
-    <h1 class="hero-title">Jewelry that tells<br><em>your story</em></h1>
-    <p class="hero-subtitle">Each piece at Norah is a quiet poem — shaped by hand, finished with care, and designed to be worn for a lifetime.</p>
-    <a href="#rings" class="btn-primary">Explore Collection</a>
-    <a href="#about" class="btn-outline">Our Story</a>
-  </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    Scroll
-  </div>
+<section class="hero">
+<div class="hero-rings">
+<div class="hero-ring"></div>
+<div class="hero-ring"></div>
+<div class="hero-ring"></div>
+</div>
+<div class="hero-content">
+<div class="hero-sub reveal">Est. 2024 — Riyadh</div>
+<h1 class="reveal">Where Art Meets<br><em>Precious</em> Metals</h1>
+<p class="hero-desc reveal">Each Norah piece is handcrafted by master artisans, blending timeless Middle Eastern design heritage with contemporary elegance.</p>
+<div class="hero-btns reveal">
+<a href="#rings" onclick="smoothTo('rings')" class="btn btn-gold">Explore Collection</a>
+<a href="#about" onclick="smoothTo('about')" class="btn btn-outline">Our Story</a>
+</div>
+</div>
+</section>
+
+<!-- SEARCH -->
+<div class="section" style="padding-bottom:0">
+<div class="search-wrap">
+${ICONS.search}
+<input type="text" id="searchInput" placeholder="Search rings, necklaces, bracelets..." oninput="filterProducts()">
+</div>
 </div>
 
 <!-- RINGS -->
-<section id="rings" class="rings-section">
-  <div class="section-header reveal">
-    <span class="section-tag">Collection I</span>
-    <h2 class="section-title">Rings</h2>
-    <span class="section-divider"></span>
-    <p class="section-desc">From delicate solitaires to sculptural statement pieces, each ring is cast with precious metals and finished by our artisans.</p>
-  </div>
-  <div class="product-grid">
-    <div class="product-card reveal">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#F5EFE0,#EDE3CF);">
-          <div class="product-icon">💍</div>
-        </div>
-      </div>
-      <span class="product-tag">New</span>
-      <div class="product-info">
-        <p class="product-name">Eternal Solitaire</p>
-        <p class="product-material">18K Gold · Diamond</p>
-        <p class="product-price">SAR 3,800</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.1s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#EAE4F0,#DDD5EA);">
-          <div class="product-icon">💍</div>
-        </div>
-      </div>
-      <div class="product-info">
-        <p class="product-name">Celestia Band</p>
-        <p class="product-material">Sterling Silver · Amethyst</p>
-        <p class="product-price">SAR 1,450</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.2s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#F0E8DC,#E4D5C0);">
-          <div class="product-icon">💍</div>
-        </div>
-      </div>
-      <span class="product-tag">Bestseller</span>
-      <div class="product-info">
-        <p class="product-name">Dune Sculptural</p>
-        <p class="product-material">22K Gold · Rose Cut</p>
-        <p class="product-price">SAR 5,200</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.3s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#E8F0EA,#D5E4D8);">
-          <div class="product-icon">💍</div>
-        </div>
-      </div>
-      <div class="product-info">
-        <p class="product-name">Mirage Stacker</p>
-        <p class="product-material">White Gold · Emerald</p>
-        <p class="product-price">SAR 2,650</p>
-      </div>
-    </div>
-  </div>
+<section class="section" id="rings">
+<div class="section-header reveal">
+<div class="section-sub">Collection</div>
+<h2 class="section-title">Rings</h2>
+<div class="gold-divider"></div>
+</div>
+<div class="products-grid" id="ringsGrid"></div>
 </section>
 
-<!-- FEATURE BANNER -->
-<div class="feature-banner">
-  <h2 class="feature-banner-title">Made to be <em>treasured</em>,<br>not just worn.</h2>
-  <p>Every Norah piece arrives in a handcrafted keepsake box, accompanied by its certificate of authenticity and provenance.</p>
-  <a href="#contact" class="btn-gold">Request a Custom Piece</a>
-</div>
-
 <!-- NECKLACES -->
-<section id="necklaces" class="necklaces-section">
-  <div class="section-header reveal">
-    <span class="section-tag">Collection II</span>
-    <h2 class="section-title">Necklaces</h2>
-    <span class="section-divider"></span>
-    <p class="section-desc">Pendants and chains that fall beautifully — each one a meditation on light, form, and the intimacy of adornment.</p>
-  </div>
-  <div class="product-grid">
-    <div class="product-card reveal">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#F5EAE0,#EAD8C8);">
-          <div class="product-icon">📿</div>
-        </div>
-      </div>
-      <div class="product-info">
-        <p class="product-name">Lunar Drop Pendant</p>
-        <p class="product-material">18K Gold · Pearl</p>
-        <p class="product-price">SAR 2,200</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.1s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#EAF0F5,#D0E0EC);">
-          <div class="product-icon">📿</div>
-        </div>
-      </div>
-      <span class="product-tag">Limited</span>
-      <div class="product-info">
-        <p class="product-name">Sapphire Thread</p>
-        <p class="product-material">White Gold · Sapphire</p>
-        <p class="product-price">SAR 4,600</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.2s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#F0EAE0,#E4D6C4);">
-          <div class="product-icon">📿</div>
-        </div>
-      </div>
-      <div class="product-info">
-        <p class="product-name">Desert Arc Chain</p>
-        <p class="product-material">22K Gold · Matte Finish</p>
-        <p class="product-price">SAR 3,900</p>
-      </div>
-    </div>
-  </div>
+<section class="section" id="necklaces">
+<div class="section-header reveal">
+<div class="section-sub">Collection</div>
+<h2 class="section-title">Necklaces</h2>
+<div class="gold-divider"></div>
+</div>
+<div class="products-grid" id="necklacesGrid"></div>
 </section>
 
 <!-- BRACELETS -->
-<section id="bracelets" class="bracelets-section">
-  <div class="section-header reveal">
-    <span class="section-tag">Collection III</span>
-    <h2 class="section-title">Bracelets</h2>
-    <span class="section-divider"></span>
-    <p class="section-desc">Wrist wear for every mood — stacked or alone, our bracelets are designed to move with you through each moment.</p>
-  </div>
-  <div class="product-grid">
-    <div class="product-card reveal">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#EDE8F5,#DDD5EA);">
-          <div class="product-icon">⌚</div>
-        </div>
-      </div>
-      <div class="product-info">
-        <p class="product-name">Serpent Cuff</p>
-        <p class="product-material">18K Gold · Brushed</p>
-        <p class="product-price">SAR 2,800</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.1s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#F5F0E0,#EDE5C8);">
-          <div class="product-icon">⌚</div>
-        </div>
-      </div>
-      <span class="product-tag">New</span>
-      <div class="product-info">
-        <p class="product-name">Soleil Tennis</p>
-        <p class="product-material">White Gold · Diamonds</p>
-        <p class="product-price">SAR 7,400</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.2s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#E8F0E8,#D4E4D4);">
-          <div class="product-icon">⌚</div>
-        </div>
-      </div>
-      <div class="product-info">
-        <p class="product-name">Oasis Bangle Set</p>
-        <p class="product-material">Sterling Silver · Jade</p>
-        <p class="product-price">SAR 1,900</p>
-      </div>
-    </div>
-    <div class="product-card reveal" style="transition-delay:0.3s">
-      <div class="product-img">
-        <div class="product-placeholder" style="background: linear-gradient(145deg,#F0EAE8,#E4D4D0);">
-          <div class="product-icon">⌚</div>
-        </div>
-      </div>
-      <div class="product-info">
-        <p class="product-name">Dusk Chain Wrap</p>
-        <p class="product-material">Rose Gold · Layered</p>
-        <p class="product-price">SAR 2,100</p>
-      </div>
-    </div>
-  </div>
+<section class="section" id="bracelets">
+<div class="section-header reveal">
+<div class="section-sub">Collection</div>
+<h2 class="section-title">Bracelets</h2>
+<div class="gold-divider"></div>
+</div>
+<div class="products-grid" id="braceletsGrid"></div>
 </section>
 
-<!-- VALUES STRIP -->
-<div class="values-strip">
-  <div class="value-item">
-    <div class="value-icon">✦</div>
-    <p class="value-name">Ethically Sourced</p>
-    <p class="value-desc">Every gemstone is traced to conflict-free origins and certified by international standards.</p>
-  </div>
-  <div class="value-item">
-    <div class="value-icon">◇</div>
-    <p class="value-name">Artisan Crafted</p>
-    <p class="value-desc">Shaped by hand in our Riyadh atelier by master jewelers with decades of experience.</p>
-  </div>
-  <div class="value-item">
-    <div class="value-icon">◯</div>
-    <p class="value-name">Lifetime Guarantee</p>
-    <p class="value-desc">We stand behind every piece — complimentary resizing, polishing, and repair for life.</p>
-  </div>
-</div>
-
 <!-- ABOUT -->
-<section id="about" class="about-section">
-  <div class="about-visual">
-    <div class="about-visual-inner">
-      <div class="about-ring"></div>
-      <div class="about-ring"></div>
-      <div class="about-ring"></div>
-      <div class="about-monogram">N</div>
-    </div>
-  </div>
-  <div class="about-content">
-    <span class="section-tag">Our Story</span>
-    <h2 class="about-title">Born from a love of<br><em>quiet beauty</em></h2>
-    <p class="about-body">Norah Jewelry was founded in Riyadh with a single belief: that jewelry should feel as meaningful as it looks. We work only with precious metals and ethically sourced stones, taking the time to craft each piece as if it were the only one.</p>
-    <p class="about-body">Our designs draw from the geometry of desert landscapes, the rhythm of Arabic calligraphy, and the timeless vocabulary of fine jewelry — always refined, always personal.</p>
-    <div class="about-stats">
-      <div>
-        <span class="stat-num">12+</span>
-        <span class="stat-label">Years of craft</span>
-      </div>
-      <div>
-        <span class="stat-num">4K+</span>
-        <span class="stat-label">Pieces made</span>
-      </div>
-      <div>
-        <span class="stat-num">100%</span>
-        <span class="stat-label">Ethically sourced</span>
-      </div>
-    </div>
-  </div>
+<section class="section about-section" id="about">
+<div class="about-inner">
+<div class="about-text reveal">
+<div class="section-sub">Our Story</div>
+<h2 class="section-title">Crafting Beauty<br>Since 2024</h2>
+<p>Born in the heart of Riyadh, Norah Jewelry is a celebration of Middle Eastern artistry and modern design. Every piece is a conversation between heritage and innovation, crafted by artisans who pour generations of knowledge into each creation.</p>
+<p>We source only the finest materials — conflict-free diamonds, ethically mined gemstones, and recycled precious metals — because beauty should never come at the cost of conscience.</p>
+</div>
+<div class="about-stats reveal">
+<div class="stat-card"><div class="num">500+</div><div class="label">Unique Designs</div></div>
+<div class="stat-card"><div class="num">12K+</div><div class="label">Happy Clients</div></div>
+<div class="stat-card"><div class="num">15+</div><div class="label">Master Artisans</div></div>
+<div class="stat-card"><div class="num">99%</div><div class="label">Satisfaction</div></div>
+</div>
+</div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="contact-section">
-  <div class="section-header reveal">
-    <span class="section-tag">Get in Touch</span>
-    <h2 class="section-title">Contact Us</h2>
-    <span class="section-divider"></span>
-    <p class="section-desc">Whether you have a question, a custom request, or simply want to say hello — we'd love to hear from you.</p>
-  </div>
-  <div class="contact-grid">
-    <div class="contact-info reveal">
-      <h3>Visit Our Atelier</h3>
-      <p>We welcome appointments at our Riyadh showroom, where you can browse the full collection and consult with our team.</p>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">◎</span>
-        <div class="contact-detail-text">
-          <span class="contact-detail-label">Location</span>
-          Al Nakheel District, Riyadh<br>Kingdom of Saudi Arabia
-        </div>
-      </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">◎</span>
-        <div class="contact-detail-text">
-          <span class="contact-detail-label">Email</span>
-          hello@norahjewelry.com
-        </div>
-      </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">◎</span>
-        <div class="contact-detail-text">
-          <span class="contact-detail-label">Phone</span>
-          +966 11 000 0000
-        </div>
-      </div>
-      <div class="contact-detail">
-        <span class="contact-detail-icon">◎</span>
-        <div class="contact-detail-text">
-          <span class="contact-detail-label">Hours</span>
-          Sunday – Thursday: 10am – 8pm<br>Saturday: 11am – 6pm
-        </div>
-      </div>
-    </div>
-    <div class="contact-form reveal" style="transition-delay:0.15s">
-      <div class="form-row">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" placeholder="Norah">
-        </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" placeholder="Al-Rashid">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label>Subject</label>
-        <select>
-          <option value="">Select a topic…</option>
-          <option>Custom Order</option>
-          <option>Product Inquiry</option>
-          <option>Appointment Request</option>
-          <option>After-Sales Service</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Message</label>
-        <textarea placeholder="Tell us how we can help…"></textarea>
-      </div>
-      <button class="btn-submit">Send Message</button>
-    </div>
-  </div>
+<section class="section" id="contact">
+<div class="section-header reveal">
+<div class="section-sub">Get In Touch</div>
+<h2 class="section-title">Contact Us</h2>
+<div class="gold-divider"></div>
+</div>
+<div class="contact-inner reveal">
+<div class="contact-form">
+<div class="form-row">
+<div class="form-group"><label>First Name</label><input type="text" placeholder="Your first name"></div>
+<div class="form-group"><label>Last Name</label><input type="text" placeholder="Your last name"></div>
+</div>
+<div class="form-group"><label>Email</label><input type="email" placeholder="your@email.com"></div>
+<div class="form-group"><label>Subject</label><input type="text" placeholder="How can we help?"></div>
+<div class="form-group"><label>Message</label><textarea placeholder="Tell us more..."></textarea></div>
+<button class="btn btn-gold" onclick="toast('Message sent! We\\'ll get back to you soon.','gold')">Send Message</button>
+</div>
+</div>
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="footer-top">
-    <div>
-      <div class="footer-brand">Norah <span>Jewelry</span></div>
-      <p class="footer-tagline">Fine jewelry crafted with intention for women who know their worth.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Collections</h4>
-      <ul>
-        <li><a href="#rings">Rings</a></li>
-        <li><a href="#necklaces">Necklaces</a></li>
-        <li><a href="#bracelets">Bracelets</a></li>
-        <li><a href="#contact">Custom Order</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <ul>
-        <li><a href="#about">Our Story</a></li>
-        <li><a href="#">Sustainability</a></li>
-        <li><a href="#">Certifications</a></li>
-        <li><a href="#">Careers</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Support</h4>
-      <ul>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#">Sizing Guide</a></li>
-        <li><a href="#">Care & Repair</a></li>
-        <li><a href="#">Returns</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span class="footer-copy">© 2026 Norah Jewelry. All rights reserved.</span>
-    <div class="social-links">
-      <a href="#">Instagram</a>
-      <a href="#">Pinterest</a>
-      <a href="#">WhatsApp</a>
-    </div>
-  </div>
+<footer class="footer no-print">
+<div class="footer-inner">
+<div>
+<div class="footer-brand">N<span>o</span>rah</div>
+<p>Handcrafted luxury jewelry from the heart of Riyadh. Each piece tells a story of heritage, artistry, and timeless elegance.</p>
+</div>
+<div class="footer-links">
+<h4>Shop</h4>
+<a href="#rings" onclick="smoothTo('rings')">Rings</a>
+<a href="#necklaces" onclick="smoothTo('necklaces')">Necklaces</a>
+<a href="#bracelets" onclick="smoothTo('bracelets')">Bracelets</a>
+</div>
+<div class="footer-links">
+<h4>Company</h4>
+<a href="#about" onclick="smoothTo('about')">Our Story</a>
+<a href="#contact" onclick="smoothTo('contact')">Contact</a>
+<a href="#" onclick="navigate(currentUser?'dashboard':'login');return false">My Account</a>
+</div>
+<div class="footer-links">
+<h4>Support</h4>
+<a href="#">Shipping Info</a>
+<a href="#">Returns</a>
+<a href="#">Size Guide</a>
+</div>
+</div>
+<div class="footer-bottom">&copy; 2024 Norah Jewelry. All rights reserved. Crafted with love in Riyadh.</div>
 </footer>
 
-<script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.12 });
-  reveals.forEach(el => observer.observe(el));
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+<div class="cart-header">
+<h2>Shopping Bag</h2>
+<button class="cart-close" onclick="closeCart()">${ICONS.x}</button>
+</div>
+<div class="cart-body" id="cartBody"><div class="cart-empty">Your bag is empty</div></div>
+<div class="cart-footer" id="cartFooter" style="display:none">
+<div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">$0</span></div>
+<button class="btn btn-gold" style="width:100%;justify-content:center" onclick="handleCheckout()">Proceed to Checkout</button>
+</div>
+</div>
 
-  // Navbar shrink
-  window.addEventListener('scroll', () => {
-    const nav = document.querySelector('nav');
-    nav.style.height = window.scrollY > 60 ? '56px' : '70px';
-  });
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+<div class="modal" id="modalContent"></div>
+</div>
+`;
+}
 
-  // Form submit
-  document.querySelector('.btn-submit').addEventListener('click', () => {
-    const btn = document.querySelector('.btn-submit');
-    btn.textContent = 'Message Sent ✦';
-    btn.style.background = '#C9A84C';
-    setTimeout(() => { btn.textContent = 'Send Message'; btn.style.background = ''; }, 3000);
-  });
+function renderProductCard(p){
+const rating = (3.5+Math.random()*1.5);
+const reviews = Math.floor(Math.random()*120)+10;
+const roundedRating = Math.round(rating*10)/10;
+return `
+<div class="product-card reveal" onclick="openProductModal('${p.id}')">
+<div class="product-card-img">
+${p.badge?`<span class="product-badge ${p.badge}">${p.badge}</span>`:''}
+<button class="quick-add" onclick="event.stopPropagation();addToCart('${p.id}')" title="Add to cart">${ICONS.plus}</button>
+<img src="${p.img_url}" alt="${p.name}" loading="lazy">
+<div class="product-card-overlay"><span class="btn btn-gold btn-sm">View Details</span></div>
+</div>
+<div class="product-card-info">
+<h3>${p.name}</h3>
+<div class="material">${p.material}</div>
+<div class="stars">${starsSVG(Math.round(roundedRating))}<span>${roundedRating} (${reviews})</span></div>
+<div class="price">${formatPrice(p.price)}</div>
+</div>
+</div>`;
+}
+
+function renderProductSections(){
+const search = document.getElementById('searchInput');
+const q = search?search.value.toLowerCase():'';
+const filtered = products.filter(p=>{
+if(!q)return true;
+return p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)||p.material.toLowerCase().includes(q);
+});
+const rings = filtered.filter(p=>p.category==='Rings');
+const necklaces = filtered.filter(p=>p.category==='Necklaces');
+const bracelets = filtered.filter(p=>p.category==='Bracelets');
+const rg=$('#ringsGrid');if(rg)rg.innerHTML=rings.map(renderProductCard).join('')||'<p style="text-align:center;color:var(--text-light);grid-column:1/-1">No rings found</p>';
+const ng=$('#necklacesGrid');if(ng)ng.innerHTML=necklaces.map(renderProductCard).join('')||'<p style="text-align:center;color:var(--text-light);grid-column:1/-1">No necklaces found</p>';
+const bg=$('#braceletsGrid');if(bg)bg.innerHTML=bracelets.map(renderProductCard).join('')||'<p style="text-align:center;color:var(--text-light);grid-column:1/-1">No bracelets found</p>';
+updateCartCount();
+}
+
+function filterProducts(){renderProductSections();initScrollReveal();}
+
+function bindHome(){
+renderProductSections();
+updateCartCount();
+initScrollReveal();
+window.addEventListener('scroll',()=>{
+const nav=$('#mainNav');
+if(nav)nav.classList.toggle('scrolled',window.scrollY>50);
+});
+}
+
+function smoothTo(id){
+const el=document.getElementById(id);
+if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+return false;
+}
+
+function toggleMobileNav(){
+const links=$('.nav-links');
+if(links)links.style.display=links.style.display==='flex'?'none':'flex';
+}
+
+// ─── SCROLL REVEAL ───
+function initScrollReveal(){
+const observer=new IntersectionObserver((entries)=>{
+entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+$$('.reveal').forEach(el=>{if(!el.classList.contains('visible'))observer.observe(el);});
+}
+
+// ─── CART ───
+function openCart(){$('#cartOverlay').classList.add('open');$('#cartDrawer').classList.add('open');renderCart();}
+function closeCart(){$('#cartOverlay').classList.remove('open');$('#cartDrawer').classList.remove('open');}
+
+async function getCartItems(){
+if(!currentUser)return guestCart;
+try{
+const{data}=await sb.from('cart_items').select('*,products(*)').eq('user_id',currentUser.id);
+return(data||[]).map(ci=>({id:ci.id,product_id:ci.product_id,qty:ci.qty,product:ci.products}));
+}catch(e){return[];}
+}
+
+async function addToCart(productId){
+const product=products.find(p=>p.id===productId);
+if(!product)return;
+if(!currentUser){
+const existing=guestCart.find(c=>c.product_id===productId);
+if(existing){existing.qty++;}
+else{guestCart.push({id:uuid(),product_id:productId,qty:1,product});}
+toast(product.name+' added to bag','gold');
+updateCartCount();
+return;
+}
+try{
+const{data:existing}=await sb.from('cart_items').select('*').eq('user_id',currentUser.id).eq('product_id',productId).single();
+if(existing){
+await sb.from('cart_items').update({qty:existing.qty+1}).eq('id',existing.id);
+}else{
+await sb.from('cart_items').insert({user_id:currentUser.id,product_id:productId,qty:1});
+}
+toast(product.name+' added to bag','gold');
+updateCartCount();
+}catch(e){toast('Could not add to cart','red');}
+}
+
+async function updateCartQty(itemId,delta){
+if(!currentUser){
+const item=guestCart.find(c=>c.id===itemId);
+if(item){item.qty=Math.max(1,item.qty+delta);}
+renderCart();updateCartCount();return;
+}
+try{
+const{data}=await sb.from('cart_items').select('*').eq('id',itemId).single();
+if(data){
+const newQty=Math.max(1,data.qty+delta);
+await sb.from('cart_items').update({qty:newQty}).eq('id',itemId);
+}
+renderCart();updateCartCount();
+}catch(e){}
+}
+
+async function removeCartItem(itemId){
+if(!currentUser){
+guestCart=guestCart.filter(c=>c.id!==itemId);
+renderCart();updateCartCount();return;
+}
+try{
+await sb.from('cart_items').delete().eq('id',itemId);
+renderCart();updateCartCount();
+}catch(e){}
+}
+
+async function renderCart(){
+const items=await getCartItems();
+const body=$('#cartBody');
+const footer=$('#cartFooter');
+if(!body)return;
+if(items.length===0){
+body.innerHTML='<div class="cart-empty">Your bag is empty</div>';
+if(footer)footer.style.display='none';
+return;
+}
+let subtotal=0;
+body.innerHTML=items.map(ci=>{
+const p=ci.product||products.find(pr=>pr.id===ci.product_id)||{};
+const lineTotal=Number(p.price||0)*ci.qty;
+subtotal+=lineTotal;
+return `<div class="cart-item">
+<div class="cart-item-img"><img src="${p.img_url||''}" alt="${p.name||''}"></div>
+<div class="cart-item-info">
+<h4>${p.name||'Product'}</h4>
+<div class="material">${p.material||''}</div>
+<div class="price">${formatPrice(p.price||0)}</div>
+<div class="cart-item-actions">
+<button class="qty-btn" onclick="updateCartQty('${ci.id}',-1)">−</button>
+<span class="qty-val">${ci.qty}</span>
+<button class="qty-btn" onclick="updateCartQty('${ci.id}',1)">+</button>
+<button class="cart-item-remove" onclick="removeCartItem('${ci.id}')">Remove</button>
+</div>
+</div>
+</div>`;
+}).join('');
+if(footer){footer.style.display='block';$('#cartSubtotal').textContent=formatPrice(subtotal);}
+}
+
+async function updateCartCount(){
+let count=0;
+if(!currentUser){count=guestCart.reduce((s,c)=>s+c.qty,0);}
+else{
+try{
+const{data}=await sb.from('cart_items').select('qty').eq('user_id',currentUser.id);
+count=(data||[]).reduce((s,c)=>s+c.qty,0);
+}catch(e){}
+}
+const badge=$('#cartCount');
+if(badge){badge.textContent=count;badge.classList.toggle('show',count>0);}
+}
+
+function handleCheckout(){
+closeCart();
+if(!currentUser){navigate('login');toast('Please log in to complete your purchase');}
+else{navigate(currentProfile?.role==='admin'?'admin':'dashboard','checkout');}
+}
+
+function handleUserClick(){
+if(currentUser){navigate(currentProfile?.role==='admin'?'admin':'dashboard');}
+else{navigate('login');}
+}
+
+// ─── PRODUCT MODAL ───
+async function openProductModal(productId){
+const p=products.find(pr=>pr.id===productId);
+if(!p)return;
+let reviews=[];
+try{
+const{data}=await sb.from('reviews').select('*').eq('product_id',productId).order('created_at',{ascending:false});
+reviews=data||[];
+}catch(e){}
+const avgStars=reviews.length?reviews.reduce((s,r)=>s+r.stars,0)/reviews.length:0;
+const dist=[0,0,0,0,0];reviews.forEach(r=>dist[r.stars-1]++);
+
+const mc=$('#modalContent');
+mc.innerHTML=`
+<button class="modal-close" onclick="closeProductModal()">${ICONS.x}</button>
+<div class="modal-body">
+<div class="modal-img"><img src="${p.img_url}" alt="${p.name}"></div>
+<div class="modal-info">
+<div class="cat">${p.category}</div>
+<h2>${p.name}</h2>
+<div class="material">${p.material}</div>
+<div class="stars">${starsSVG(Math.round(avgStars))}<span>${avgStars.toFixed(1)} (${reviews.length} reviews)</span></div>
+<div class="price">${formatPrice(p.price)}</div>
+<div class="stock-status"><span class="dot ${p.in_stock!==false?'in':'out'}"></span>${p.in_stock!==false?'In Stock':'Out of Stock'}</div>
+<p class="desc">${p.description||''}</p>
+<div class="modal-details">
+<div><strong>Weight:</strong> ${p.weight||'N/A'}</div>
+<div><strong>Dimensions:</strong> ${p.dimensions||'N/A'}</div>
+</div>
+<div class="modal-qty">
+<label>Qty</label>
+<button class="qty-btn" onclick="modalQtyChange(-1)">−</button>
+<span class="qty-val" id="modalQty">1</span>
+<button class="qty-btn" onclick="modalQtyChange(1)">+</button>
+</div>
+<div class="modal-btns">
+<button class="btn btn-gold" onclick="addToCartModal('${p.id}')">Add to Cart</button>
+<button class="btn btn-outline" onclick="closeProductModal();openCart()">View Cart</button>
+</div>
+</div>
+<div class="modal-reviews">
+<h3>Customer Reviews</h3>
+<div class="review-summary">
+<div class="review-avg">
+<div class="big">${avgStars.toFixed(1)}</div>
+<div class="stars-row">${starsSVG(Math.round(avgStars),16)}</div>
+<div class="count">${reviews.length} reviews</div>
+</div>
+<div class="review-bars">
+${[5,4,3,2,1].map(s=>{
+const cnt=dist[s-1];const pct=reviews.length?(cnt/reviews.length*100):0;
+return `<div class="review-bar-row"><span>${s}</span><svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z" fill="#C9A84C"/></svg><div class="review-bar-track"><div class="review-bar-fill" style="width:${pct}%"></div></div><span>${cnt}</span></div>`;
+}).join('')}
+</div>
+</div>
+<div id="reviewsList">
+${reviews.map(r=>`
+<div class="review-card">
+<div class="review-card-header">
+<span class="name">${r.reviewer_name||'Anonymous'}</span>
+${r.verified?'<span class="verified">✓ Verified Purchase</span>':''}
+<span class="date">${new Date(r.created_at).toLocaleDateString()}</span>
+</div>
+<div class="stars-row">${starsSVG(r.stars,14)}</div>
+<p>${r.review_text||''}</p>
+</div>
+`).join('')}
+${reviews.length===0?'<p style="color:var(--text-light);font-size:14px">No reviews yet. Be the first to review!</p>':''}
+</div>
+${currentUser?`
+<div class="review-form">
+<h4>Write a Review</h4>
+<div class="star-picker" id="starPicker">
+${[1,2,3,4,5].map(s=>`<button onclick="setReviewStars(${s})" data-star="${s}"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></button>`).join('')}
+</div>
+<textarea id="reviewText" placeholder="Share your experience..."></textarea>
+<button class="btn btn-gold btn-sm" onclick="submitReview('${p.id}')">Submit Review</button>
+</div>
+`:`<div class="review-form"><p style="color:var(--text-light)">Sign in to leave a review. <a href="#" onclick="closeProductModal();navigate('login');return false" style="color:var(--gold);font-weight:600">Sign In</a></p></div>`}
+</div>
+</div>`;
+
+$('#productModal').classList.add('open');
+document.body.style.overflow='hidden';
+}
+
+function closeProductModal(){$('#productModal').classList.remove('open');document.body.style.overflow='';}
+let modalQtyVal=1;
+function modalQtyChange(d){modalQtyVal=Math.max(1,modalQtyVal+d);const el=$('#modalQty');if(el)el.textContent=modalQtyVal;}
+async function addToCartModal(pid){
+for(let i=0;i<modalQtyVal;i++)await addToCart(pid);
+modalQtyVal=1;
+const el=$('#modalQty');if(el)el.textContent=1;
+}
+
+let reviewStars=0;
+function setReviewStars(n){
+reviewStars=n;
+$$('#starPicker button').forEach(b=>{
+b.classList.toggle('active',parseInt(b.dataset.star)<=n);
+});
+}
+
+async function submitReview(productId){
+if(!reviewStars){toast('Please select a star rating','red');return;}
+const text=$('#reviewText')?.value||'';
+if(!text.trim()){toast('Please write a review','red');return;}
+try{
+// Check if user has ordered this product (verified purchase)
+let verified=false;
+const{data:orderItems}=await sb.from('order_items').select('*,orders!inner(user_id)').eq('orders.user_id',currentUser.id).eq('product_id',productId);
+if(orderItems&&orderItems.length>0)verified=true;
+await sb.from('reviews').insert({
+product_id:productId,
+user_id:currentUser.id,
+reviewer_name:(currentProfile?.first_name||'')+' '+(currentProfile?.last_name||''),
+stars:reviewStars,
+review_text:text,
+verified
+});
+toast('Review submitted!','gold');
+reviewStars=0;
+openProductModal(productId);
+}catch(e){toast('Could not submit review','red');}
+}
+
+// ─── AUTH ───
+function renderAuth(type){
+const isLogin = type==='login';
+return `
+<div class="auth-page">
+<div class="auth-card">
+<div class="logo">N<span>o</span>rah</div>
+<h2>${isLogin?'Welcome Back':'Create Account'}</h2>
+${isLogin?'':'<p class="subtitle">Join Norah for a personalized jewelry experience</p>'}
+<div class="auth-error" id="authError"></div>
+<div class="auth-form">
+${!isLogin?`
+<div class="form-row">
+<div class="form-group"><label>First Name</label><input type="text" id="regFirst" placeholder="First name"></div>
+<div class="form-group"><label>Last Name</label><input type="text" id="regLast" placeholder="Last name"></div>
+</div>`:''}
+<div class="form-group"><label>Email</label><input type="email" id="authEmail" placeholder="your@email.com"></div>
+<div class="form-group"><label>Password</label><input type="password" id="authPass" placeholder="${isLogin?'Your password':'Min 6 characters'}"></div>
+<button class="btn btn-gold" style="width:100%;justify-content:center" id="authSubmit">${isLogin?'Sign In':'Create Account'}</button>
+</div>
+<div class="auth-switch">
+${isLogin?'Don\'t have an account? <a href="#" onclick="navigate(\'register\');return false">Register</a>':'Already have an account? <a href="#" onclick="navigate(\'login\');return false">Sign In</a>'}
+</div>
+<div style="margin-top:12px;text-align:center"><a href="#" onclick="navigate('home');return false" style="color:var(--text-light);font-size:13px">← Back to Store</a></div>
+</div>
+</div>`;
+}
+
+function bindAuth(type){
+const btn=$('#authSubmit');
+if(!btn)return;
+btn.addEventListener('click',async()=>{
+const email=$('#authEmail').value.trim();
+const pass=$('#authPass').value;
+const errEl=$('#authError');
+errEl.style.display='none';
+if(!email||!pass){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}
+btn.disabled=true;btn.textContent='Please wait...';
+try{
+if(type==='login'){
+const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+if(error)throw error;
+currentUser=data.user;
+const{data:prof}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+currentProfile=prof;
+// Merge guest cart
+for(const item of guestCart){
+try{
+const{data:existing}=await sb.from('cart_items').select('*').eq('user_id',currentUser.id).eq('product_id',item.product_id).maybeSingle();
+if(existing){await sb.from('cart_items').update({qty:existing.qty+item.qty}).eq('id',existing.id);}
+else{await sb.from('cart_items').insert({user_id:currentUser.id,product_id:item.product_id,qty:item.qty});}
+}catch(e){}
+}
+guestCart=[];
+toast('Welcome back, '+(currentProfile?.first_name||'')+'!','gold');
+navigate(currentProfile?.role==='admin'?'admin':'dashboard');
+}else{
+const first=$('#regFirst').value.trim();
+const last=$('#regLast').value.trim();
+if(!first||!last){errEl.textContent='Please enter your name.';errEl.style.display='block';btn.disabled=false;btn.textContent='Create Account';return;}
+if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';errEl.style.display='block';btn.disabled=false;btn.textContent='Create Account';return;}
+const{data,error}=await sb.auth.signUp({email,password:pass});
+if(error)throw error;
+if(data.user){
+await sb.from('profiles').insert({id:data.user.id,first_name:first,last_name:last,role:'user'});
+currentUser=data.user;
+currentProfile={id:data.user.id,first_name:first,last_name:last,role:'user'};
+toast('Account created! Welcome, '+first+'!','gold');
+navigate('dashboard');
+}
+}
+}catch(e){
+errEl.textContent=e.message||'Something went wrong.';errEl.style.display='block';
+btn.disabled=false;btn.textContent=type==='login'?'Sign In':'Create Account';
+}
+});
+}
+
+async function logout(){
+try{await sb.auth.signOut();}catch(e){}
+currentUser=null;currentProfile=null;guestCart=[];
+toast('Logged out');navigate('home');
+}
+
+// ─── USER DASHBOARD ───
+function renderDashboard(activePanel){
+const panel = activePanel||'orders';
+return `
+<div class="dash-page">
+<div class="dash-header no-print">
+<a href="#" class="logo" onclick="navigate('home');return false">N<span>o</span>rah</a>
+<div class="dash-header-right">
+<span class="dash-user">${currentProfile?.first_name||''} ${currentProfile?.last_name||''}</span>
+<button class="btn btn-sm btn-outline" onclick="navigate('home')">Store</button>
+<button class="btn btn-sm btn-outline" onclick="logout()">Logout</button>
+</div>
+</div>
+<div class="dash-layout">
+<div class="dash-sidebar no-print">
+<nav class="dash-nav">
+<a href="#" class="${panel==='orders'?'active':''}" onclick="switchDashPanel('orders');return false">${ICONS.orders} My Orders</a>
+<a href="#" class="${panel==='checkout'?'active':''}" onclick="switchDashPanel('checkout');return false">${ICONS.cart} Checkout</a>
+<a href="#" class="${panel==='profile'?'active':''}" onclick="switchDashPanel('profile');return false">${ICONS.user} My Profile</a>
+</nav>
+</div>
+<div class="dash-content" id="dashContent">
+<div class="dash-panel ${panel==='orders'?'active':''}" id="panelOrders"><h2>My Orders</h2><div id="userOrdersTable">Loading...</div></div>
+<div class="dash-panel ${panel==='checkout'?'active':''}" id="panelCheckout"><h2>Checkout</h2><div id="checkoutContent">Loading...</div></div>
+<div class="dash-panel ${panel==='profile'?'active':''}" id="panelProfile"><h2>My Profile</h2><div id="profileContent"></div></div>
+</div>
+</div>
+</div>`;
+}
+
+function switchDashPanel(panel){
+$$('.dash-nav a').forEach(a=>a.classList.remove('active'));
+$$('.dash-panel').forEach(p=>p.classList.remove('active'));
+const navLink = $(`.dash-nav a[onclick*="${panel}"]`);
+if(navLink) navLink.classList.add('active');
+const panelEl = $(`#panel${panel.charAt(0).toUpperCase()+panel.slice(1)}`);
+if(panelEl) panelEl.classList.add('active');
+if(panel==='orders')loadUserOrders();
+if(panel==='checkout')loadCheckout();
+if(panel==='profile')loadProfile();
+}
+
+function bindDashboard(){
+loadUserOrders();loadCheckout();loadProfile();
+}
+
+async function loadUserOrders(){
+const el=$('#userOrdersTable');if(!el||!currentUser)return;
+try{
+const{data:orders}=await sb.from('orders').select('*,order_items(*,products(*))').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+if(!orders||orders.length===0){el.innerHTML='<p style="color:var(--text-light)">No orders yet.</p>';return;}
+el.innerHTML=`<div class="dash-table"><table>
+<thead><tr><th>Order ID</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+<tbody>${orders.map(o=>`<tr>
+<td style="font-size:12px;font-family:monospace">${o.id.slice(0,8)}...</td>
+<td>${(o.order_items||[]).map(oi=>(oi.products?.name||'Item')+' ×'+oi.qty).join(', ')}</td>
+<td style="font-weight:600;color:var(--gold)">${formatPrice(o.total)}</td>
+<td><span class="status-badge ${o.status}">${o.status}</span></td>
+<td>${new Date(o.created_at).toLocaleDateString()}</td>
+</tr>`).join('')}</tbody></table></div>`;
+}catch(e){el.innerHTML='<p style="color:#C0392B">Error loading orders</p>';}
+}
+
+async function loadCheckout(){
+const el=$('#checkoutContent');if(!el||!currentUser)return;
+try{
+const items=await getCartItems();
+if(items.length===0){el.innerHTML='<p style="color:var(--text-light)">Your cart is empty. <a href="#" onclick="navigate(\'home\');return false" style="color:var(--gold);font-weight:600">Continue Shopping</a></p>';return;}
+let subtotal=0;
+const itemsHTML=items.map(ci=>{
+const p=ci.product||{};subtotal+=Number(p.price||0)*ci.qty;
+return `<div class="order-summary-item">
+<img src="${p.img_url||''}" alt="${p.name||''}">
+<div class="info"><h4>${p.name||'Product'}</h4><div class="sub">${p.material||''} × ${ci.qty}</div><div class="price">${formatPrice((p.price||0)*ci.qty)}</div></div>
+</div>`;
+}).join('');
+
+el.innerHTML=`<div class="checkout-grid">
+<div>
+<div class="payment-card-preview">
+<div class="chip"></div>
+<div class="card-number" id="previewCardNum">•••• •••• •••• ••••</div>
+<div class="card-bottom">
+<div class="card-name" id="previewCardName">YOUR NAME</div>
+<div class="card-brand">NORAH</div>
+</div>
+</div>
+<div class="payment-form">
+<h3>Payment Details</h3>
+<div class="form-group" style="margin-bottom:14px"><label>Cardholder Name</label><input type="text" id="cardName" placeholder="Name on card" oninput="updateCardPreview()"></div>
+<div class="form-group" style="margin-bottom:14px"><label>Card Number</label><input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNum();updateCardPreview()"></div>
+<div class="form-row" style="margin-bottom:14px">
+<div class="form-group"><label>Expiry</label><input type="text" id="cardExp" placeholder="MM/YY" maxlength="5"></div>
+<div class="form-group"><label>CVC</label><input type="text" id="cardCvc" placeholder="123" maxlength="4"></div>
+</div>
+<button class="btn btn-gold" style="width:100%;justify-content:center" onclick="placeOrder()">Place Order — ${formatPrice(subtotal)}</button>
+</div>
+</div>
+<div>
+<div class="order-summary">
+<h3>Order Summary</h3>
+${itemsHTML}
+<div class="order-summary-total"><span>Total</span><span>${formatPrice(subtotal)}</span></div>
+</div>
+</div>
+</div>`;
+}catch(e){el.innerHTML='<p style="color:#C0392B">Error loading checkout</p>';}
+}
+
+function updateCardPreview(){
+const name=$('#cardName');const num=$('#cardNum');
+if($('#previewCardName'))$('#previewCardName').textContent=(name?.value||'YOUR NAME').toUpperCase();
+if($('#previewCardNum'))$('#previewCardNum').textContent=num?.value||'•••• •••• •••• ••••';
+}
+
+function formatCardNum(){
+const el=$('#cardNum');if(!el)return;
+let v=el.value.replace(/\D/g,'');
+let formatted='';
+for(let i=0;i<v.length&&i<16;i++){if(i>0&&i%4===0)formatted+=' ';formatted+=v[i];}
+el.value=formatted;
+}
+
+async function placeOrder(){
+if(!currentUser)return;
+const name=$('#cardName')?.value;const num=$('#cardNum')?.value;const exp=$('#cardExp')?.value;const cvc=$('#cardCvc')?.value;
+if(!name||!num||!exp||!cvc){toast('Please fill in all payment details','red');return;}
+try{
+const items=await getCartItems();
+if(items.length===0){toast('Cart is empty','red');return;}
+let total=0;
+const orderItems=items.map(ci=>{
+const p=ci.product||{};const lineTotal=Number(p.price||0)*ci.qty;total+=lineTotal;
+return{product_id:ci.product_id,qty:ci.qty,price:Number(p.price||0)};
+});
+const{data:order,error:oErr}=await sb.from('orders').insert({user_id:currentUser.id,total,status:'processing'}).select().single();
+if(oErr)throw oErr;
+const oiData=orderItems.map(oi=>({...oi,order_id:order.id}));
+const{error:oiErr}=await sb.from('order_items').insert(oiData);
+if(oiErr)throw oiErr;
+await sb.from('cart_items').delete().eq('user_id',currentUser.id);
+toast('Order placed successfully!','gold');
+switchDashPanel('orders');
+}catch(e){toast('Error placing order: '+(e.message||''),'red');}
+}
+
+function loadProfile(){
+const el=$('#profileContent');if(!el||!currentProfile)return;
+el.innerHTML=`
+<div class="add-form" style="max-width:500px">
+<div class="form-group" style="margin-bottom:14px"><label>First Name</label><input type="text" id="profFirst" value="${currentProfile.first_name||''}"></div>
+<div class="form-group" style="margin-bottom:14px"><label>Last Name</label><input type="text" id="profLast" value="${currentProfile.last_name||''}"></div>
+<div class="form-group" style="margin-bottom:14px"><label>Email</label><input type="email" value="${currentUser.email||''}" disabled style="background:var(--cream)"></div>
+<button class="btn btn-gold" onclick="saveProfile()">Save Changes</button>
+</div>`;
+}
+
+async function saveProfile(){
+const first=$('#profFirst')?.value.trim();const last=$('#profLast')?.value.trim();
+if(!first||!last){toast('Name is required','red');return;}
+try{
+await sb.from('profiles').update({first_name:first,last_name:last}).eq('id',currentUser.id);
+currentProfile.first_name=first;currentProfile.last_name=last;
+toast('Profile saved!','gold');
+}catch(e){toast('Error saving profile','red');}
+}
+
+// ─── ADMIN DASHBOARD ───
+function renderAdmin(activePanel){
+const panel = activePanel||'overview';
+return `
+<div class="dash-page">
+<div class="dash-header no-print">
+<a href="#" class="logo" onclick="navigate('home');return false">N<span>o</span>rah</a>
+<div class="dash-header-right">
+<span class="dash-user" style="color:var(--gold)">Admin</span>
+<span class="dash-user">${currentProfile?.first_name||''}</span>
+<button class="btn btn-sm btn-outline" onclick="navigate('home')">Store</button>
+<button class="btn btn-sm btn-outline" onclick="logout()">Logout</button>
+</div>
+</div>
+<div class="dash-layout">
+<div class="dash-sidebar no-print">
+<nav class="dash-nav" id="adminNav">
+<a href="#" class="${panel==='overview'?'active':''}" onclick="switchAdminPanel('overview');return false">${ICONS.grid} Overview</a>
+<a href="#" class="${panel==='products'?'active':''}" onclick="switchAdminPanel('products');return false">${ICONS.package} Jewellery Items</a>
+<a href="#" class="${panel==='addItem'?'active':''}" onclick="switchAdminPanel('addItem');return false">${ICONS.addItem} Add Item</a>
+<a href="#" class="${panel==='allOrders'?'active':''}" onclick="switchAdminPanel('allOrders');return false">${ICONS.orders} All Orders</a>
+<a href="#" class="${panel==='invoice'?'active':''}" onclick="switchAdminPanel('invoice');return false">${ICONS.invoice} Invoice</a>
+<a href="#" class="${panel==='profile'?'active':''}" onclick="switchAdminPanel('profile');return false">${ICONS.user} My Profile</a>
+</nav>
+</div>
+<div class="dash-content" id="adminContent">
+<div class="dash-panel ${panel==='overview'?'active':''}" id="adminOverview"><h2>Dashboard Overview</h2><div id="adminOverviewContent">Loading...</div></div>
+<div class="dash-panel ${panel==='products'?'active':''}" id="adminProducts"><h2>Jewellery Items</h2><div id="adminProductsContent">Loading...</div></div>
+<div class="dash-panel ${panel==='addItem'?'active':''}" id="adminAddItem"><h2>Add New Item</h2><div id="adminAddItemContent"></div></div>
+<div class="dash-panel ${panel==='allOrders'?'active':''}" id="adminAllOrders"><h2>All Orders</h2><div id="adminAllOrdersContent">Loading...</div></div>
+<div class="dash-panel ${panel==='invoice'?'active':''}" id="adminInvoice"><h2>Invoice</h2><div id="adminInvoiceContent"><p style="color:var(--text-light)">Select an order from All Orders to generate an invoice.</p></div></div>
+<div class="dash-panel ${panel==='profile'?'active':''}" id="adminProfile"><h2>My Profile</h2><div id="adminProfileContent"></div></div>
+</div>
+</div>
+</div>`;
+}
+
+function switchAdminPanel(panel){
+$$('.dash-nav a').forEach(a=>a.classList.remove('active'));
+$$('.dash-panel').forEach(p=>p.classList.remove('active'));
+const panelMap={overview:'adminOverview',products:'adminProducts',addItem:'adminAddItem',allOrders:'adminAllOrders',invoice:'adminInvoice',profile:'adminProfile'};
+const navLink = $(`.dash-nav a[onclick*="${panel}"]`);
+if(navLink) navLink.classList.add('active');
+const panelEl = $(`#${panelMap[panel]}`);
+if(panelEl) panelEl.classList.add('active');
+if(panel==='overview')loadAdminOverview();
+if(panel==='products')loadAdminProducts();
+if(panel==='addItem')loadAdminAddForm();
+if(panel==='allOrders')loadAllOrders();
+if(panel==='profile')loadAdminProfile();
+}
+
+function bindAdmin(){
+loadAdminOverview();loadAdminProducts();loadAdminAddForm();loadAllOrders();loadAdminProfile();
+}
+
+async function loadAdminOverview(){
+const el=$('#adminOverviewContent');if(!el)return;
+try{
+const[prodRes,ordRes,profRes]=await Promise.all([
+sb.from('products').select('id',{count:'exact',head:true}),
+sb.from('orders').select('*,order_items(*)'),
+sb.from('profiles').select('id',{count:'exact',head:true}).eq('role','user')
+]);
+const totalProducts=prodRes.count||0;
+const orders=ordRes.data||[];
+const totalOrders=orders.length;
+const revenue=orders.filter(o=>o.status==='delivered').reduce((s,o)=>s+Number(o.total),0);
+const customers=profRes.count||0;
+const recentOrders=orders.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,5);
+
+el.innerHTML=`
+<div class="stat-cards">
+<div class="stat-card-dash"><div class="label">Total Products</div><div class="num">${totalProducts}</div></div>
+<div class="stat-card-dash"><div class="label">Total Orders</div><div class="num">${totalOrders}</div></div>
+<div class="stat-card-dash"><div class="label">Revenue (Delivered)</div><div class="num">${formatPrice(revenue)}</div></div>
+<div class="stat-card-dash"><div class="label">Customers</div><div class="num">${customers}</div></div>
+</div>
+<h3 style="font-size:20px;font-weight:500;margin-bottom:16px">Recent Orders</h3>
+<div class="dash-table"><table>
+<thead><tr><th>Order ID</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+<tbody>${recentOrders.map(o=>`<tr>
+<td style="font-size:12px;font-family:monospace">${o.id.slice(0,8)}...</td>
+<td style="font-weight:600">${formatPrice(o.total)}</td>
+<td><span class="status-badge ${o.status}">${o.status}</span></td>
+<td>${new Date(o.created_at).toLocaleDateString()}</td>
+</tr>`).join('')}</tbody></table></div>`;
+}catch(e){el.innerHTML='<p style="color:#C0392B">Error loading overview</p>';}
+}
+
+async function loadAdminProducts(){
+const el=$('#adminProductsContent');if(!el)return;
+try{
+const{data}=await sb.from('products').select('*').order('created_at',{ascending:true});
+if(!data||data.length===0){el.innerHTML='<p style="color:var(--text-light)">No products.</p>';return;}
+el.innerHTML=`<div class="dash-table"><table>
+<thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Material</th><th>Price</th><th>Badge</th><th>Stock</th><th>Action</th></tr></thead>
+<tbody>${data.map(p=>`<tr>
+<td><img src="${p.img_url}" style="width:48px;height:48px;object-fit:cover;border-radius:6px" alt=""></td>
+<td style="font-weight:500">${p.name}</td>
+<td>${p.category}</td>
+<td style="font-size:12px">${p.material}</td>
+<td style="font-weight:600;color:var(--gold)">${formatPrice(p.price)}</td>
+<td>${p.badge?`<span class="product-badge ${p.badge}" style="position:static">${p.badge}</span>`:'-'}</td>
+<td>${p.in_stock!==false?'✓':'-'}</td>
+<td><button class="btn btn-sm" style="color:#C0392B;border:1px solid #C0392B;border-radius:6px;padding:6px 14px" onclick="removeProduct('${p.id}')">Remove</button></td>
+</tr>`).join('')}</tbody></table></div>`;
+}catch(e){el.innerHTML='<p style="color:#C0392B">Error loading products</p>';}
+}
+
+async function removeProduct(id){
+try{
+await sb.from('products').delete().eq('id',id);
+products=products.filter(p=>p.id!==id);
+toast('Product removed','gold');
+loadAdminProducts();
+}catch(e){toast('Error removing product','red');}
+}
+
+function loadAdminAddForm(){
+const el=$('#adminAddItemContent');if(!el)return;
+el.innerHTML=`
+<div class="add-form">
+<div class="form-row" style="margin-bottom:14px">
+<div class="form-group"><label>Name</label><input type="text" id="addName" placeholder="Product name"></div>
+<div class="form-group"><label>Category</label><select id="addCategory"><option>Rings</option><option>Necklaces</option><option>Bracelets</option></select></div>
+</div>
+<div class="form-row" style="margin-bottom:14px">
+<div class="form-group"><label>Material</label><input type="text" id="addMaterial" placeholder="e.g. 18K Gold · Diamond"></div>
+<div class="form-group"><label>Price ($)</label><input type="number" id="addPrice" placeholder="0"></div>
+</div>
+<div class="form-row" style="margin-bottom:14px">
+<div class="form-group"><label>Badge</label><select id="addBadge"><option value="">None</option><option>New</option><option>Bestseller</option><option>Limited</option></select></div>
+<div class="form-group"><label>Image URL</label><input type="text" id="addImg" placeholder="https://images.unsplash.com/..."></div>
+</div>
+<div class="form-group" style="margin-bottom:14px"><label>Description</label><textarea id="addDesc" placeholder="Product description..." rows="3"></textarea></div>
+<div class="form-row" style="margin-bottom:14px">
+<div class="form-group"><label>Weight</label><input type="text" id="addWeight" placeholder="e.g. 4.2g"></div>
+<div class="form-group"><label>Dimensions</label><input type="text" id="addDims" placeholder="e.g. 6mm band width"></div>
+</div>
+<div class="toggle-group" style="margin-bottom:20px">
+<label style="font-size:13px;font-weight:600">In Stock</label>
+<div class="toggle on" id="addStockToggle" onclick="this.classList.toggle('on')"></div>
+</div>
+<button class="btn btn-gold" onclick="addProduct()">Add Product</button>
+</div>`;
+}
+
+async function addProduct(){
+const name=$('#addName')?.value.trim();
+const category=$('#addCategory')?.value;
+const material=$('#addMaterial')?.value.trim();
+const price=parseFloat($('#addPrice')?.value||0);
+const badge=$('#addBadge')?.value;
+const img_url=$('#addImg')?.value.trim();
+const description=$('#addDesc')?.value.trim();
+const weight=$('#addWeight')?.value.trim();
+const dimensions=$('#addDims')?.value.trim();
+const in_stock=$('#addStockToggle')?.classList.contains('on');
+if(!name||!material||!price){toast('Name, material and price are required','red');return;}
+try{
+const{data,error}=await sb.from('products').insert({name,category,material,price,badge:badge||null,img_url:img_url||'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80&fit=crop',description,weight,dimensions,in_stock}).select().single();
+if(error)throw error;
+products.push(data);
+toast('Product added!','gold');
+loadAdminAddForm();
+loadAdminProducts();
+}catch(e){toast('Error adding product: '+(e.message||''),'red');}
+}
+
+async function loadAllOrders(){
+const el=$('#adminAllOrdersContent');if(!el)return;
+try{
+const{data:orders}=await sb.from('orders').select('*,order_items(*,products(*)),profiles(first_name,last_name)').order('created_at',{ascending:false});
+if(!orders||orders.length===0){el.innerHTML='<p style="color:var(--text-light)">No orders yet.</p>';return;}
+el.innerHTML=`<div class="dash-table"><table>
+<thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Invoice</th></tr></thead>
+<tbody>${orders.map(o=>`<tr>
+<td style="font-size:12px;font-family:monospace">${o.id.slice(0,8)}...</td>
+<td>${o.profiles?.first_name||''} ${o.profiles?.last_name||''}</td>
+<td style="font-size:12px">${(o.order_items||[]).map(oi=>(oi.products?.name||'Item')+' ×'+oi.qty).join(', ')}</td>
+<td style="font-weight:600;color:var(--gold)">${formatPrice(o.total)}</td>
+<td><select class="status-select" onchange="updateOrderStatus('${o.id}',this.value)">
+${['pending','processing','delivered','cancelled'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}
+</select></td>
+<td>${new Date(o.created_at).toLocaleDateString()}</td>
+<td><button class="btn btn-sm btn-outline" style="padding:6px 14px;border-radius:6px" onclick="showInvoice('${o.id}')">View</button></td>
+</tr>`).join('')}</tbody></table></div>`;
+}catch(e){el.innerHTML='<p style="color:#C0392B">Error loading orders</p>';}
+}
+
+async function updateOrderStatus(orderId,status){
+try{
+await sb.from('orders').update({status}).eq('id',orderId);
+toast('Order status updated','gold');
+}catch(e){toast('Error updating status','red');}
+}
+
+async function showInvoice(orderId){
+switchAdminPanel('invoice');
+const el=$('#adminInvoiceContent');if(!el)return;
+try{
+const{data:order}=await sb.from('orders').select('*,order_items(*,products(*)),profiles(first_name,last_name)').eq('id',orderId).single();
+if(!order){el.innerHTML='<p>Order not found.</p>';return;}
+el.innerHTML=`
+<div class="invoice-wrap" id="invoicePrint">
+<div class="invoice-header">
+<div class="brand">N<span>o</span>rah<br><span style="font-size:12px;letter-spacing:2px;color:var(--text-light);font-family:var(--sans)">JEWELRY</span></div>
+<div class="info">
+<strong>INVOICE</strong><br>
+#${order.id.slice(0,8).toUpperCase()}<br>
+${new Date(order.created_at).toLocaleDateString()}<br>
+Status: ${order.status}
+</div>
+</div>
+<div class="invoice-meta">
+<div class="block">
+<h4>Bill To</h4>
+<p>${order.profiles?.first_name||''} ${order.profiles?.last_name||''}</p>
+</div>
+<div class="block" style="text-align:right">
+<h4>From</h4>
+<p>Norah Jewelry</p>
+<p>Riyadh, Saudi Arabia</p>
+</div>
+</div>
+<table class="invoice-table">
+<thead><tr><th>Item</th><th>Material</th><th>Qty</th><th>Unit Price</th><th style="text-align:right">Total</th></tr></thead>
+<tbody>
+${(order.order_items||[]).map(oi=>`<tr>
+<td>${oi.products?.name||'Product'}</td>
+<td style="font-size:12px;color:var(--text-light)">${oi.products?.material||''}</td>
+<td>${oi.qty}</td>
+<td>${formatPrice(oi.price)}</td>
+<td style="text-align:right">${formatPrice(oi.price*oi.qty)}</td>
+</tr>`).join('')}
+<tr class="total-row"><td colspan="4" style="text-align:right">Total</td><td style="text-align:right;color:var(--gold)">${formatPrice(order.total)}</td></tr>
+</tbody>
+</table>
+<div class="invoice-footer">Thank you for shopping with Norah Jewelry.</div>
+</div>
+<div style="text-align:center;margin-top:20px" class="no-print">
+<button class="btn btn-gold" onclick="window.print()">${ICONS.printer} Print Invoice</button>
+</div>`;
+}catch(e){el.innerHTML='<p style="color:#C0392B">Error loading invoice</p>';}
+}
+
+function loadAdminProfile(){
+const el=$('#adminProfileContent');if(!el||!currentProfile)return;
+el.innerHTML=`
+<div class="add-form" style="max-width:500px">
+<div class="form-group" style="margin-bottom:14px"><label>First Name</label><input type="text" id="adminProfFirst" value="${currentProfile.first_name||''}"></div>
+<div class="form-group" style="margin-bottom:14px"><label>Last Name</label><input type="text" id="adminProfLast" value="${currentProfile.last_name||''}"></div>
+<div class="form-group" style="margin-bottom:14px"><label>Email</label><input type="email" value="${currentUser?.email||''}" disabled style="background:var(--cream)"></div>
+<div class="form-group" style="margin-bottom:14px"><label>Role</label><input type="text" value="${currentProfile.role||''}" disabled style="background:var(--cream)"></div>
+<button class="btn btn-gold" onclick="saveAdminProfile()">Save Changes</button>
+</div>`;
+}
+
+async function saveAdminProfile(){
+const first=$('#adminProfFirst')?.value.trim();const last=$('#adminProfLast')?.value.trim();
+if(!first||!last){toast('Name is required','red');return;}
+try{
+await sb.from('profiles').update({first_name:first,last_name:last}).eq('id',currentUser.id);
+currentProfile.first_name=first;currentProfile.last_name=last;
+toast('Profile saved!','gold');
+}catch(e){toast('Error saving profile','red');}
+}
+
+// ─── BOOT ───
+(function waitForSupabase(attempts){
+if(typeof supabase!=='undefined'&&supabase.createClient){init();}
+else if(attempts>0){setTimeout(function(){waitForSupabase(attempts-1);},200);}
+else{document.getElementById('appLoader').innerHTML='<p>Failed to load. Please refresh.</p>';}
+})(50);
 </script>
+
+<!--
+═══════════════════════════════════════════════════
+  SUPABASE SQL — Run this in your Supabase SQL Editor
+═══════════════════════════════════════════════════
+
+-- 1) Profiles
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  first_name TEXT,
+  last_name TEXT,
+  role TEXT DEFAULT 'user',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can read own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- 2) Products
+CREATE TABLE IF NOT EXISTS products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  category TEXT,
+  material TEXT,
+  price NUMERIC DEFAULT 0,
+  badge TEXT,
+  img_url TEXT,
+  description TEXT,
+  weight TEXT,
+  dimensions TEXT,
+  in_stock BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE products DISABLE ROW LEVEL SECURITY;
+
+-- Public read access
+CREATE POLICY "Anyone can read products" ON products FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can insert products" ON products FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Authenticated users can delete products" ON products FOR DELETE USING (auth.uid() IS NOT NULL);
+CREATE POLICY "Authenticated users can update products" ON products FOR UPDATE USING (auth.uid() IS NOT NULL);
+
+-- 3) Cart Items
+CREATE TABLE IF NOT EXISTS cart_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  qty INTEGER DEFAULT 1,
+  UNIQUE(user_id, product_id)
+);
+
+ALTER TABLE cart_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can manage own cart" ON cart_items FOR ALL USING (auth.uid() = user_id);
+
+-- 4) Orders
+CREATE TABLE IF NOT EXISTS orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  total NUMERIC DEFAULT 0,
+  status TEXT DEFAULT 'processing',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can read own orders" ON orders FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own orders" ON orders FOR INSERT WITH CHECK (auth.uid() = user_id);
+-- Admin: read all orders (add a broader policy for admin role)
+CREATE POLICY "Admin can read all orders" ON orders FOR SELECT USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+CREATE POLICY "Admin can update all orders" ON orders FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- 5) Order Items
+CREATE TABLE IF NOT EXISTS order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+  qty INTEGER DEFAULT 1,
+  price NUMERIC DEFAULT 0
+);
+
+ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can read own order items" ON order_items FOR SELECT USING (
+  EXISTS (SELECT 1 FROM orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid())
+);
+CREATE POLICY "Users can insert own order items" ON order_items FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid())
+);
+CREATE POLICY "Admin can read all order items" ON order_items FOR SELECT USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+);
+
+-- 6) Reviews
+CREATE TABLE IF NOT EXISTS reviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  reviewer_name TEXT,
+  stars INTEGER CHECK (stars >= 1 AND stars <= 5),
+  review_text TEXT,
+  verified BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE reviews DISABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can read reviews" ON reviews FOR SELECT USING (true);
+CREATE POLICY "Authenticated users can insert reviews" ON reviews FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-->
 </body>
 </html>
